@@ -12,7 +12,7 @@ public class User {
 
 
     /**
-     * Create/Register a User
+     * Register a new User
      * A new user consisting of a username, email and password password is created and saved to database
      * @param userName New user userName.
      * @param password New user password
