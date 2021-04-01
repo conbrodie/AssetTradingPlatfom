@@ -1,10 +1,9 @@
 package AssetTradingPlatform;
 
+import javax.security.auth.login.CredentialException;
+
 /**
- * A User
- * @param userName A users userName.
- * @param password A users password
- * @param email A users email
+ * A class to manage user details and functions related to a user
  */
 public class User {
     public String userName;
@@ -18,24 +17,24 @@ public class User {
      * @param userName New user userName.
      * @param password New user password
      * @param email New user email
-     * @throws UserNameException if username already exists
-     * @throws EmailException if email already exists
+     * @throws CredentialException Username already exists
+     * @throws CredentialException Email already exists
      */
-    public User(String userName, String password, String email){
+    public User(String userName, String password, String email) throws CredentialException{
 
     }
 
 
     /**
      * Login a User
-     * When loging in a User, an email and password are required.
+     * When logging in a User, an email and password are required.
      * Users entered password should be hashed and compared to the saved hashed password associated to the same username
      * @param userName A users userName.
      * @param password A users password
-     * @throws LoginException Incorrect credentials
-     * @throws UserNameException User Doesn't Exist
+     * @throws CredentialException Incorrect credentials
+     * @throws CredentialException User Doesn't Exist
      */
-    public void Login(String userName, String password){
+    public void Login(String userName, String password) throws CredentialException{
 
     }
 
@@ -55,9 +54,9 @@ public class User {
      * Should retrieve email associated with the attempted login username and send link to reset password
      * Should not reveal associated email to which reset was sent only display message "Email sent"
      * @param userName A users userName
-     * @throws UserNameException User Doesn't Exist
+     * @throws CredentialException User Doesn't Exist
      */
-    public void ResetPassword(String userName){
+    public void ResetPassword(String userName) throws CredentialException{
 
     }
 
