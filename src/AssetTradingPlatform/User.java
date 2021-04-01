@@ -9,6 +9,7 @@ public class User {
     public String userName;
     public String password;
     public String email;
+    public Boolean admin;
 
 
     /**
@@ -67,6 +68,30 @@ public class User {
      */
     public void RemoveUser(String userName){
 
+    }
+
+    /**
+     * Adds Admin status to user
+     * @param userName A users userName
+     */
+    public void AddAdmin(String userName){
+    }
+
+    /**
+     * Removes admin status from user
+     * @param userName A users userName
+     */
+    public void RemoveAdmin(String userName){
+
+    }
+
+    /**
+     * Checks if user is Admin
+     * @param userName A users userName
+     * @return admin Is user admin
+     */
+    public boolean AdminUser(String userName){
+        return false;
     }
 
 }

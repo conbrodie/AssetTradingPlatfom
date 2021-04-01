@@ -1,7 +1,5 @@
 package AssetTradingPlatform;
 
-import javax.security.auth.login.CredentialException;
-
 /**
  * A class to manage asset details and functions related to an asset
  */
@@ -13,9 +11,17 @@ public class Asset {
      * Create a new Asset
      * A new asset is created and saved to a database of assets
      * @param assetName New assets name
-     * @param assetValue  Value of one of this new asset in credits
      */
-    public Asset(String assetName, int assetValue){
+    public Asset(String assetName){
+
+    }
+
+    /**
+     * Remove a new Asset
+     * Remove an asset from asset database
+     * @param assetName New assets name
+     */
+    public void RemoveAsset(String assetName){
 
     }
 }

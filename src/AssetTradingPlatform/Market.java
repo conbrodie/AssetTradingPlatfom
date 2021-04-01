@@ -1,17 +1,49 @@
 package AssetTradingPlatform;
 
-import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  * A class to manage active buy/sell listings and their properties (price, amount, ...)
  */
 public class Market {
-    public HashSet marketPlace;
+    /**
+     * @param activeMarketPlace Holds all Active(Unfulfilled) orders
+     * @param historicalMarketPlace Holds Inactive(Fulfilled) orders in order of time placed (most recent to least recent). Must only contain orders within a range. Either time period (Last 7 days of orders) or until collection fills up
+     */
+    public TreeSet activeMarketPlace;
+    public TreeSet historicalMarketPlace;
 
     /**
      * A class to create a new market place (a collection or list to hold requested trades)
      */
     public Market(){
+
+    }
+
+    /**
+     * Takes an order and adds it to class
+     * @see orderCheck
+     * @see orderMatch
+     */
+    public void AddOrder(){
+
+    }
+
+    /**
+     * Remove a listed order
+     * @param id Unique order ID
+     */
+    public void RemoveOrder(){
+
+    }
+
+    /**
+     * Relist an order
+     * @param id Unique order ID
+     * @see removeOrder
+     * @see addOrder
+     */
+    public void RelistOrder(){
 
     }
 
@@ -23,7 +55,7 @@ public class Market {
     }
 
     /**
-     * Checks an incoming order/trade request and checks if any other currently active orders could fufil request
+     * Checks an incoming order/trade request and checks if any other currently active orders could fulfil request
      */
     public void orderMatch(){
 
