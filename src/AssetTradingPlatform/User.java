@@ -60,4 +60,13 @@ public class User {
 
     }
 
+    /**
+     * Removes existing User
+     * Should only be possible by admin
+     * @param userName A users userName
+     */
+    public void RemoveUser(String userName){
+
+    }
+
 }
