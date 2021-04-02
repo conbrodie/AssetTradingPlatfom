@@ -88,7 +88,7 @@ public class User {
     /**
      * Checks if user is Admin
      * @param userName A users userName
-     * @return admin Is user admin
+     * @return isAdmin Is user an admin
      */
     public boolean AdminUser(String userName){
         return false;

@@ -8,13 +8,13 @@ import java.util.TreeSet;
 public class Market {
     /**
      * @param activeMarketPlace Holds all Active(Unfulfilled) orders
-     * @param historicalMarketPlace Holds Inactive(Fulfilled) orders in order of time placed (most recent to least recent). Must only contain orders within a range. Either time period (Last 7 days of orders) or until collection fills up
+     * @param historicalMarketPlace Holds Inactive(Fulfilled) orders in order of time placed (most recent to least recent). Must only contain orders within a range (Last 7 days of orders)
      */
     public TreeSet activeMarketPlace;
     public TreeSet historicalMarketPlace;
 
     /**
-     * A class to create a new market place (a collection or list to hold requested trades)
+     * A class to create a new market place (a collection, list or db to hold requested trades)
      */
     public Market(){
 
@@ -22,6 +22,7 @@ public class Market {
 
     /**
      * Takes an order and adds it to class
+     * @param Order An order object
      * @see orderCheck
      * @see orderMatch
      */
