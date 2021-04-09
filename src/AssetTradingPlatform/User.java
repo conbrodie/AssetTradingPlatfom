@@ -18,10 +18,11 @@ public class User {
      * @param userName New user userName.
      * @param password New user password
      * @param email New user email
+     * @param organisation New user's organisation
      * @throws CredentialException Username already exists
      * @throws CredentialException Email already exists
      */
-    public User(String userName, String password, String email) throws CredentialException{
+    public void createUser(String userName, String password,  String email, String organisation) throws CredentialException{
 
     }
 
