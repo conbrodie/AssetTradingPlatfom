@@ -2,6 +2,7 @@ package AssetTradingPlatform;
 
 import javax.security.auth.login.CredentialException;
 
+
 /**
  * A class to manage user details and functions related to a user
  */
@@ -10,7 +11,15 @@ public class User {
     public String password;
     public String email;
     public Boolean admin;
+    private final UserDB userDB;
 
+    /**
+     * Create a user management object
+     * @param userDB the user database
+     */
+    public User(UserDB userDB){
+        this.userDB = userDB;
+    }
 
     /**
      * Register a new User
