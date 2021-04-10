@@ -13,57 +13,58 @@ public class Market {
     public TreeSet activeMarketPlace;
     public TreeSet historicalMarketPlace;
 
+
     /**
-     * A class to create a new market place (a collection, list or db to hold requested trades)
+     * A class to create a new market place (a collection, list or db to hold orders)
      */
     public Market(){
 
     }
 
+
     /**
-     * Takes an order and adds it to class
-     * @param Order An order object
-     * @see orderCheck
-     * @see orderMatch
+     * Takes an order and adds it to market using its orderID
+     * @param orderID An order object
+     * @see #orderCheck() Used when adding an order
+     * @see #orderMatch() Used when adding an order
      */
-    public void AddOrder(){
+    public void AddOrder(int orderID){
 
     }
+
 
     /**
      * Remove a listed order
-     * @param id Unique order ID
+     * @param orderID Unique order ID
      */
-    public void RemoveOrder(){
+    public void RemoveOrder(int orderID){
 
     }
+
 
     /**
      * Relist an order
-     * @param id Unique order ID
-     * @see removeOrder
-     * @see addOrder
+     * @param orderID Unique order ID
+     * @see #RemoveOrder(int orderID) Called for same orderID in method
+     * @see #AddOrder(int orderID) Called for same orderID in method
      */
-    public void RelistOrder(){
+    public void RelistOrder(int orderID){
 
     }
 
+
     /**
-     * Checks an incoming order/trade request and checks the required resources are avaliable to place order
+     * Checks if incoming order has sufficient resources are available to place order
      */
     public void orderCheck(){
 
     }
 
+
     /**
-     * Checks an incoming order/trade request and checks if any other currently active orders could fulfil request
+     * Checks if incoming order could be fulfilled with other currently active orders
      */
     public void orderMatch(){
 
     }
-
-
-
-
-
 }

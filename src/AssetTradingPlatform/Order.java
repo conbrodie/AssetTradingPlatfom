@@ -20,17 +20,15 @@ public class Order {
 
     /**
      * Create New Order
-     * @param id Unique order ID
-     * @param assetName
+     * @param orderID Unique order ID
+     * @param assetName Asset being traded
      * @param orderRequest Buy or Sell
-     * @param orderAmount Amount of asset in order
-     * @param assetValue Specified value of asset in order
-     * @throws OrderException Insuffecient credits
-     * @throws OrderException User doesnt have access to requested asset (Sell only)
+     * @param orderAmount Amount of asset in order (CAN FRACTIONS OF ASSET BE SOLD?? FLOAT OR INT)
+     * @param assetValue Specified cost (Buy/Sell price) of assets in the order
+     * @throws Exception Insufficient credits
+     * @throws Exception User doesn't have access to requested asset (Sell only)
      */
-    public Order(){
+    public Order(int orderID, String assetName, boolean orderRequest, float orderAmount, float assetValue) throws Exception{
 
     }
-
-
 }

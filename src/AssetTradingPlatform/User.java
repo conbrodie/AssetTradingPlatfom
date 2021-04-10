@@ -61,6 +61,7 @@ public class User {
 
     }
 
+
     /**
      * Removes existing User
      * Should only be possible by admin
@@ -70,12 +71,14 @@ public class User {
 
     }
 
+
     /**
      * Adds Admin status to user
      * @param userName A users userName
      */
     public void AddAdmin(String userName){
     }
+
 
     /**
      * Removes admin status from user
@@ -84,6 +87,7 @@ public class User {
     public void RemoveAdmin(String userName){
 
     }
+
 
     /**
      * Checks if user is Admin

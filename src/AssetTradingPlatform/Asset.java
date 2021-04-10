@@ -16,6 +16,7 @@ public class Asset {
 
     }
 
+
     /**
      * Remove a new Asset
      * Remove an asset from asset database
