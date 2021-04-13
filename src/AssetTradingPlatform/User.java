@@ -30,9 +30,10 @@ public class User {
      * @param organisation New user's organisation
      * @throws CredentialException Username already exists
      * @throws CredentialException Email already exists
+     * @return
      */
-    public void createUser(String userName, String password,  String email, String organisation) throws CredentialException{
-
+    public String createUser(String userName, String password, String email, String organisation) throws CredentialException{
+        return "";
     }
 
 
@@ -45,8 +46,8 @@ public class User {
      * @throws CredentialException Incorrect credentials
      * @throws CredentialException User Doesn't Exist
      */
-    public void Login(String userName, String password) throws CredentialException{
-
+    public String Login(String userName, String password) throws CredentialException{
+        return "";
     }
 
 
