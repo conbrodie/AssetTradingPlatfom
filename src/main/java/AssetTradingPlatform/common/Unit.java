@@ -1,4 +1,4 @@
-package AssetTradingPlatform;
+package AssetTradingPlatform.common;
 
 import java.util.TreeSet;
 

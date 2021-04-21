@@ -1,25 +1,15 @@
-package AssetTradingPlatform;
+package AssetTradingPlatform.server;
 
 import javax.security.auth.login.CredentialException;
 
-
-
-/**
- * A class to manage user details and functions related to a user
- */
-public class User {
-    public String userName;
-    public String password;
-    public String email;
-    public Boolean admin;
-    private final UserDB userDB;
-
+public class UserController {
+    private final AssetTradingPlatform.server.DB DB;
     /**
      * Create a user management object
-     * @param userDB the user database
+     * @param DB the user database
      */
-    public User(UserDB userDB){
-        this.userDB = userDB;
+    public UserController(DB DB){
+        this.DB = DB;
     }
 
     /**
@@ -29,11 +19,11 @@ public class User {
      * @param password New user password
      * @param email New user email
      * @param organisation New user's organisation
-     * @throws CredentialException Username already exists
-     * @throws CredentialException Email already exists
+     * @throws javax.security.auth.login.CredentialException Username already exists
+     * @throws javax.security.auth.login.CredentialException Email already exists
      * @return
      */
-    public String createUser(String userName, String password, String email, String organisation) throws CredentialException{
+    public String createUser(String userName, String password, String email, String organisation) throws javax.security.auth.login.CredentialException {
         return "";
     }
 
@@ -44,10 +34,10 @@ public class User {
      * Users entered password should be hashed and compared to the saved hashed password associated to the same username
      * @param userName A users userName.
      * @param password A users password
-     * @throws CredentialException Incorrect credentials
-     * @throws CredentialException User Doesn't Exist
+     * @throws javax.security.auth.login.CredentialException Incorrect credentials
+     * @throws javax.security.auth.login.CredentialException User Doesn't Exist
      */
-    public String Login(String userName, String password) throws CredentialException{
+    public String login(String userName, String password) throws javax.security.auth.login.CredentialException {
         return "";
     }
 
@@ -57,8 +47,8 @@ public class User {
      * When logging out a User, the active users email is required.
      * @param userName A users userName
      */
-    public void Logout(String userName){
-
+    public boolean logout(String userName){
+        return false;
     }
 
 
@@ -67,10 +57,20 @@ public class User {
      * Should retrieve email associated with the attempted login username and send link to reset password
      * Should not reveal associated email to which reset was sent only display message "Email sent"
      * @param userName A users userName
-     * @throws CredentialException User Doesn't Exist
+     * @throws javax.security.auth.login.CredentialException User Doesn't Exist
      */
-    public void resetPassword(String userName) throws CredentialException{
+    public void resetPassword(String userName) throws CredentialException {
 
+    }
+
+    /**
+     * Change a Users password if their login matches.
+     * @param userName the username.
+     * @param oldPassword the old password.
+     * @param newPassword the new password.
+     */
+    public boolean changePassword(String userName, String oldPassword, String newPassword) {
+        return false;
     }
 
 
@@ -79,7 +79,7 @@ public class User {
      * Should only be possible by admin
      * @param userName A users userName
      */
-    public void RemoveUser(String userName){
+    public void removeUser(String userName){
 
     }
 
@@ -88,7 +88,7 @@ public class User {
      * Adds Admin status to user
      * @param userName A users userName
      */
-    public void AddAdmin(String userName){
+    public void addAdmin(String userName){
     }
 
 
@@ -96,7 +96,7 @@ public class User {
      * Removes admin status from user
      * @param userName A users userName
      */
-    public void RemoveAdmin(String userName){
+    public void removeAdmin(String userName){
 
     }
 
@@ -106,7 +106,7 @@ public class User {
      * @param userName A users userName
      * @return isAdmin Is user an admin
      */
-    public boolean AdminUser(String userName){
+    public boolean adminUser(String userName){
         return false;
     }
 
