@@ -3,6 +3,7 @@ package AssetTradingPlatform;
 import javax.security.auth.login.CredentialException;
 
 
+
 /**
  * A class to manage user details and functions related to a user
  */
@@ -68,7 +69,7 @@ public class User {
      * @param userName A users userName
      * @throws CredentialException User Doesn't Exist
      */
-    public void ResetPassword(String userName) throws CredentialException{
+    public void resetPassword(String userName) throws CredentialException{
 
     }
 

@@ -130,5 +130,47 @@ public class TestUser {
         user.Login("Kate","123");
         assertEquals("Logged out", user.Logout("Kate"), "Failed to logout");
     }
+    /**
+     * Test for ResetPassword Method
+     */
+    @Test
+    public void testSuccessResetPassword() throws CredentialException {
+        user.createUser("Kate", "123", "kate@gmail.com","ComputerClusterDivision");
+        user.Login("Kate","123");
+        assertEquals("Updated password", user.resetPassword("1","1"), "Failed to change password");
+    }
+    @Test
+    public void testLeaveNewPasswordBlank() throws CredentialException {
+        assertThrows(CredentialException.class, () ->{
+            user.createUser("Kate", "123", "kate@gmail.com","ComputerClusterDivision");
+            user.Login("Kate","123");
+            user.resetPassword("","1");
+        });
+    }
+    @Test
+    public void testLeaveConfirmPasswordBlank() throws CredentialException {
+        assertThrows(CredentialException.class, () ->{
+            user.createUser("Kate", "123", "kate@gmail.com","ComputerClusterDivision");
+            user.Login("Kate","123");
+            user.resetPassword("1","");
+        });
+    }
+    @Test
+    public void testUserEnterAnOldPassword() throws CredentialException {
+        assertThrows(CredentialException.class, () ->{
+            user.createUser("Kate", "123", "kate@gmail.com","ComputerClusterDivision");
+            user.Login("Kate","123");
+            user.resetPassword("123","123");
+        });
+    }
+    @Test
+    public void testConfirmPasswordNotMatchNewPassword() throws CredentialException {
+        assertThrows(CredentialException.class, () ->{
+            user.createUser("Kate", "123", "kate@gmail.com","ComputerClusterDivision");
+            user.Login("Kate","123");
+            user.resetPassword("1","1.1");
+        });
+    }
+
 }
 
