@@ -121,5 +121,14 @@ public class TestUser {
             user.Login("Kate","1234");
         });
     }
+    /**
+     * Test for Logout Method
+     */
+    @Test
+    public void testSuccessLogout() throws CredentialException {
+        user.createUser("Kate", "123", "kate@gmail.com","ComputerClusterDivision");
+        user.Login("Kate","123");
+        assertEquals("Logged out", user.Logout("Kate"), "Failed to logout");
+    }
 }
 
