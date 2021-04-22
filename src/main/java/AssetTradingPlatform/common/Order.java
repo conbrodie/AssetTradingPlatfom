@@ -28,7 +28,7 @@ public class Order {
      *
      * @param orderID      Unique order ID
      * @param assetName    Asset being traded
-     * @param orderRequest Buy or Sell
+     * @param orderStatus Buy or Sell
      * @param orderAmount  Amount of asset in order (CAN FRACTIONS OF ASSET BE SOLD?? FLOAT OR INT)
      * @param assetValue   Specified cost (Buy/Sell price) of assets in the order
      * @throws Exception Insufficient credits

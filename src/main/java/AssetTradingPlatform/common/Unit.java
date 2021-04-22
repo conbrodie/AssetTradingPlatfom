@@ -32,7 +32,7 @@ public class Unit {
      * @throws Exception Unitname doesnt exist
      * @throws Exception User already in unit
      */
-    public void AddUser(String userName, String unitName) throws Exception{
+    public void addUser(String userName, String unitName) throws Exception{
 
     }
 
@@ -46,7 +46,7 @@ public class Unit {
      * @throws Exception Username not part of unit
      * @throws Exception Unitname doesnt exist
      */
-    public void RemoveUser(String userName, String unitName) throws Exception{
+    public void removeUser(String userName, String unitName) throws Exception{
 
     }
 
@@ -61,7 +61,7 @@ public class Unit {
      * @throws Exception Unitname doesnt exist
      * @throws Exception Cant set credits to negative
      */
-    public void EditCredits(String unitName, float creditAmount) throws Exception{
+    public void editCredits(String unitName, float creditAmount) throws Exception{
 
     }
 
