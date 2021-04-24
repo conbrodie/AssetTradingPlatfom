@@ -32,60 +32,60 @@ public class Market {
 
 
     /**
-     * Takes an order and adds it to trade_current via its orderID
-     * @param orderID An order object
-     * @see #OrderCheck(int orderID) Called when adding an order
-     * @see #OrderMatch(int orderID) Called when adding an order
+     * Takes an order and adds it to trade_current via its order_id
+     * @param order_id An order object
+     * @see #OrderCheck(int order_id) Called when adding an order
+     * @see #OrderMatch(int order_id) Called when adding an order
      */
-    public void AddOrder(int orderID){
+    public void AddOrder(int order_id){
         date_listed = new Date();
     }
 
 
     /**
-     * Remove an active listed order from trade_current via its orderID
-     * @param orderID Unique order ID
+     * Remove an active listed order from trade_current via its order_id
+     * @param order_id Unique order ID
      */
-    public void RemoveOrder(int orderID){
+    public void RemoveOrder(int order_id){
 
     }
 
 
     /**
-     * Relist an active order to trade_current via its orderID
-     * @param orderID Unique order ID
-     * @see #RemoveOrder(int orderID)
-     * @see #AddOrder(int orderID)
+     * Relist an active order to trade_current via its order_id
+     * @param order_id Unique order_id ID
+     * @see #RemoveOrder(int order_id)
+     * @see #AddOrder(int order_id)
      */
-    public void RelistOrder(int orderID){
+    public void RelistOrder(int order_id){
 
     }
 
 
     /**
      * Checks if incoming order has sufficient resources available to place order
-     * @param orderID Unique order ID
+     * @param order_id Unique order_id
      */
-    public void OrderCheck(int orderID){
+    public void OrderCheck(int order_id){
 
     }
 
 
     /**
      * Checks if incoming order could be fulfilled by other currently active orders.
-     * @param orderID Unique order ID
+     * @param order_id Unique order_id
      */
-    public void OrderMatch(int orderID){
+    public void OrderMatch(int order_id){
 
     }
 
     /**
      * Used to move order from active to historical. Called when order has been filled.
-     * Should create and pass a date_fulfilled of the order, the date_listed, and the orderID.
-     * @see #RemoveOrder(int orderID)
-     * @param orderID Unique order ID
+     * Should create and pass a date_fulfilled of the order, the date_listed, and the order_id.
+     * @see #RemoveOrder(int order_id)
+     * @param order_id Unique order_id
      */
-    public void OrderTransfer(int orderID){
+    public void OrderTransfer(int order_id){
 
     }
 }
