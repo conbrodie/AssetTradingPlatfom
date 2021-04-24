@@ -10,22 +10,26 @@ import java.util.Set;
  * A class to manage user details and functions related to a user
  */
 public class User {
-    public String userName;
+    public int user_id;
+    public String username;
     public String password;
-    public String email;
-    public Set<Privilege> privileges;
+    public Privilege user_type;
+    public int org_unit_id;
 
 
     /**
      * Register a new User
      * A new user consisting of a username, email and password password is created and saved to database
-     * @param userName New user userName.
+     * @param username New user userName.
      * @param password New user password
-     * @param email New user email
+     * @param user_type Type of User and associated privileges
+     * @param org_unit_id Organisational Unit the User is a part of
      * @throws CredentialException Username already exists
      * @throws CredentialException Email already exists
+     * @throws CredentialException User Type doesn't exist
+     * @throws CredentialException Org doesn't exist
      */
-    public User(String userName, String password, String email,Set<Privilege> privileges ) throws CredentialException{
+    public User(String username, String password, Privilege user_type, int org_unit_id) throws CredentialException{
 
     }
 
