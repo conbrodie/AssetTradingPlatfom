@@ -5,37 +5,38 @@ import AssetTradingPlatform.common.OrderRequest;
 import java.time.LocalDateTime;
 
 /**
- * A class to create a new order
+ * New order
  */
 public class Order {
     /**
-     * @param timeCreated Time of listing
-     * @param userCreated User who created listing
-     * @param orderStatus Active(Unfulfilled) or Inactive(Fulfilled)
-     * @param unitName Which unit the order is associated with (Unit of user)
+     * @param order_id Unique autoincrement order_id
+     * @param order_status Active(Unfulfilled) or Inactive(Fulfilled)
+     * @param trade_type Buy or Sell order
+     * @param user_id User who created order
+     * @param asset_name Asset of order
+     * @param quantity Quantity of Asset in order
+     * @param price Value of each asset in order
      */
-    public int orderID;
-    public LocalDateTime timeCreated;
-    public String assetName;
-    public OrderRequest orderStatus;
-    public int orderAmount;
-    public int assetValue;
+    public int order_id;
+    public OrderStatus order_status = OrderStatus.Active;
+    public OrderRequest trade_type;
+    public int user_id;
+    public String asset_name;
+    public int quantity;
+    public int price;
 
 
 
     /**
-     * Create New Order
-     *
-     * @param orderID      Unique order ID
-     * @param assetName    Asset being traded
-     * @param orderStatus Buy or Sell
-     * @param orderAmount  Amount of asset in order (CAN FRACTIONS OF ASSET BE SOLD?? FLOAT OR INT)
-     * @param assetValue   Specified cost (Buy/Sell price) of assets in the order
+     * Create Order
+     * @param trade_type Buy or Sell
+     * @param asset_name Asset being traded
+     * @param quantity Amount of asset in order
+     * @param price Specified value of asset in order
      * @throws Exception Insufficient credits
      * @throws Exception User doesn't have access to requested asset (Sell only)
      */
-    public Order(int orderID, LocalDateTime timeCreated, String assetName, OrderRequest orderStatus, int orderAmount, int assetValue) throws Exception {
+    public Order(OrderRequest trade_type, String asset_name, int quantity, int price) throws Exception {
 
     }
-
 }

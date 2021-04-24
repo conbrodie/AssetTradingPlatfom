@@ -82,6 +82,7 @@ public class Market {
     /**
      * Used to move order from active to historical. Called when order has been filled.
      * Should create and pass a date_fulfilled of the order, the date_listed, and the order_id.
+     * Should update orders status.
      * @see #RemoveOrder(int order_id)
      * @param order_id Unique order_id
      */
