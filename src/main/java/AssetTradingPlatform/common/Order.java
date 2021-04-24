@@ -9,20 +9,32 @@ import java.time.LocalDateTime;
  */
 public class Order {
     /**
-     * @param order_id Unique autoincrement order_id
-     * @param order_status Active(Unfulfilled) or Inactive(Fulfilled)
-     * @param trade_type Buy or Sell order
-     * @param user_id User who created order
-     * @param asset_name Asset of order
-     * @param quantity Quantity of Asset in order
-     * @param price Value of each asset in order
+     * Unique autoincrement order_id
      */
     public int order_id;
+    /**
+     * Active(Unfulfilled) or Inactive(Fulfilled)
+     */
     public OrderStatus order_status = OrderStatus.Active;
+    /**
+     * Buy or Sell order
+     */
     public OrderRequest trade_type;
+    /**
+     * User who created order
+     */
     public int user_id;
+    /**
+     * Asset of order
+     */
     public String asset_name;
+    /**
+     * Quantity of Asset in order
+     */
     public int quantity;
+    /**
+     * Value of each asset in order
+     */
     public int price;
 
 

@@ -1,1 +1,5 @@
 AssetTradingPlatform.common
+AssetTradingPlatform.server
+AssetTradingPlatform.server.test
+helpers
+msgprotocol
