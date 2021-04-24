@@ -25,17 +25,17 @@ public class TestOrder {
     @Test
     public void  testSuccessCreateBuy() throws Exception {
         Order b = order.createOrder("CPU Hours", OrderRequest.BUY, 50, 10, "ComputeClusterDivision");
-        assertEquals( new Order(1, LocalDateTime.now(), "CPU Hours", OrderRequest.BUY, 50, 10), b,"Failed to create a buy");
+        assertEquals( new Order(OrderRequest.BUY, "CPU Hours",  50, 10), b,"Failed to create a buy");
     }
     @Test
     public void  testBuyMinOfQuantityAndPrice() throws Exception {
         Order b = order.createOrder("CPU Hours", OrderRequest.BUY, 50, 10, "ComputeClusterDivision");
-        assertEquals( new Order(1, LocalDateTime.now(), "CPU Hours", OrderRequest.BUY, 1, 1), b,"Failed to create a buy");
+        assertEquals( new Order(OrderRequest.BUY, "CPU Hours", 1, 1), b,"Failed to create a buy");
     }
     @Test
     public void  testBuyMaxOfQuantityAndPrice() throws Exception {
         Order b = order.createOrder("CPU Hours", OrderRequest.BUY, 50, 10, "ComputeClusterDivision");
-        assertEquals( new Order(1, LocalDateTime.now(), "CPU Hours", OrderRequest.BUY, 2147483647, 2147483647), b,"Failed to create a buy");
+        assertEquals( new Order(OrderRequest.BUY, "CPU Hours", 2147483647, 2147483647), b,"Failed to create a buy");
     }
     @Test
     public void  testBuyPriceIsZero()  {
@@ -52,7 +52,7 @@ public class TestOrder {
     @Test
     public void  testBuyQuantityIsTooBig()  {
         assertThrows(CredentialException.class, () -> {
-            Order b = order.createOrder("CPU Hours", OrderRequest.BUY, 2147483648, 10, "ComputeClusterDivision");
+            Order b = order.createOrder("CPU Hours", OrderRequest.BUY, 214748364, 10, "ComputeClusterDivision");
         });
     }
     @Test
@@ -67,17 +67,17 @@ public class TestOrder {
     @Test
     public void  testSuccessCreateSell() throws Exception {
         Order b = order.createOrder("CPU Hours", OrderRequest.SELL, 50, 10, "ComputeClusterDivision");
-        assertEquals( new Order(1, LocalDateTime.now(), "CPU Hours", OrderRequest.SELL, 50, 10), b,"Failed to create a sell");
+        assertEquals( new Order(OrderRequest.SELL, "CPU Hours", 50, 10), b,"Failed to create a sell");
     }
     @Test
     public void  testSellMinOfQuantityAndPrice() throws Exception {
         Order b = order.createOrder("CPU Hours", OrderRequest.SELL, 50, 10, "ComputeClusterDivision");
-        assertEquals( new Order(1, LocalDateTime.now(), "CPU Hours", OrderRequest.SELL, 1, 1), b,"Failed to create a sell");
+        assertEquals( new Order(OrderRequest.SELL, "CPU Hours", 1, 1), b,"Failed to create a sell");
     }
     @Test
     public void  testSellMaxOfQuantityAndPrice() throws Exception {
         Order b = order.createOrder("CPU Hours", OrderRequest.SELL, 50, 10, "ComputeClusterDivision");
-        assertEquals( new Order(1, LocalDateTime.now(), "CPU Hours", OrderRequest.SELL, 2147483647, 2147483647), b,"Failed to create a sell");
+        assertEquals( new Order(OrderRequest.SELL, "CPU Hours",  21474836, 21474836), b,"Failed to create a sell");
     }
     @Test
     public void  testSellPriceIsZero()  {
@@ -94,7 +94,7 @@ public class TestOrder {
     @Test
     public void  testSellQuantityIsTooBig()  {
         assertThrows(CredentialException.class, () -> {
-            Order b = order.createOrder("CPU Hours", OrderRequest.SELL, 2147483648, 10, "ComputeClusterDivision");
+            Order b = order.createOrder("CPU Hours", OrderRequest.SELL, 214748364, 10, "ComputeClusterDivision");
         });
     }
 //    @Test
