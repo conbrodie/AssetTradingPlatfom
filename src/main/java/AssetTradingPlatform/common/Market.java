@@ -1,40 +1,49 @@
 package AssetTradingPlatform.common;
 
-import java.util.TreeSet;
+import java.util.Date;
+import java.util.TreeMap;
 
 /**
- * A class to manage active buy/sell listings and their properties (price, amount, ...)
+ * Manages active orders including: fulfilling orders by matching them with others, moving fulfilled orders from active to historical
  */
 public class Market {
     /**
-     * @param activeMarketPlace Holds all Active(Unfulfilled) orders
-     * @param historicalMarketPlace Holds Inactive(Fulfilled) orders in order of time placed (most recent to least recent). Must only contain orders within a range (Last 7 days of orders)
+     * Time which order was listed on market
      */
-    public TreeSet activeMarketPlace;
-    public TreeSet historicalMarketPlace;
-
+    Date date_listed;
+    /**
+     * Time which order was fulfilled
+     */
+    Date date_fulfilled = null;
 
     /**
-     * A class to create a new market place (a collection, list or db to hold orders)
+     * Define market place which consists of two sets/tables to track active and non-active orders.
      */
     public Market(){
-
+        /**
+         * TEMPORARY set (before connected to DB) to hold Active (Unfulfilled) orders
+         */
+        TreeMap trade_current = new TreeMap();
+        /**
+         * TEMPORARY set (before connected to DB) to hold Inactive(Fulfilled) orders
+         */
+        TreeMap trade_history = new TreeMap();
     }
 
 
     /**
-     * Takes an order and adds it to market using its orderID
+     * Takes an order and adds it to trade_current via its orderID
      * @param orderID An order object
-     * @see #orderCheck() Used when adding an order
-     * @see #orderMatch() Used when adding an order
+     * @see #OrderCheck(int orderID) Called when adding an order
+     * @see #OrderMatch(int orderID) Called when adding an order
      */
     public void AddOrder(int orderID){
-
+        date_listed = new Date();
     }
 
 
     /**
-     * Remove a listed order
+     * Remove an active listed order from trade_current via its orderID
      * @param orderID Unique order ID
      */
     public void RemoveOrder(int orderID){
@@ -43,10 +52,10 @@ public class Market {
 
 
     /**
-     * Relist an order
+     * Relist an active order to trade_current via its orderID
      * @param orderID Unique order ID
-     * @see #RemoveOrder(int orderID) Called for same orderID in method
-     * @see #AddOrder(int orderID) Called for same orderID in method
+     * @see #RemoveOrder(int orderID)
+     * @see #AddOrder(int orderID)
      */
     public void RelistOrder(int orderID){
 
@@ -54,17 +63,29 @@ public class Market {
 
 
     /**
-     * Checks if incoming order has sufficient resources are available to place order
+     * Checks if incoming order has sufficient resources available to place order
+     * @param orderID Unique order ID
      */
-    public void orderCheck(){
+    public void OrderCheck(int orderID){
 
     }
 
 
     /**
-     * Checks if incoming order could be fulfilled with other currently active orders
+     * Checks if incoming order could be fulfilled by other currently active orders.
+     * @param orderID Unique order ID
      */
-    public void orderMatch(){
+    public void OrderMatch(int orderID){
+
+    }
+
+    /**
+     * Used to move order from active to historical. Called when order has been filled.
+     * Should create and pass a date_fulfilled of the order, the date_listed, and the orderID.
+     * @see #RemoveOrder(int orderID)
+     * @param orderID Unique order ID
+     */
+    public void OrderTransfer(int orderID){
 
     }
 }
