@@ -14,7 +14,7 @@ public class Market {
     /**
      * Time which order was fulfilled
      */
-    Date date_fulfilled = null;
+    Date trade_date = null;
 
     /**
      * Define market place which consists of two sets/tables to track active and non-active orders.
