@@ -95,7 +95,7 @@ public class TestUser {
      * Test for login Method
      */
     @Test
-    public void testSuccesslogin() throws CredentialException {
+    public void testSuccessLogin() throws CredentialException {
         user.createUser("Kate", "123", "kate@gmail.com","ComputerClusterDivision");
         assertEquals("Logged in", user.login("Kate","123"), "Failed to login");
     }
