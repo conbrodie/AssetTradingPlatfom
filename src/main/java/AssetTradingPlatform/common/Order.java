@@ -25,6 +25,10 @@ public class Order {
      */
     public int user_id;
     /**
+     * Unit related to user
+     */
+    public int unit_id;
+    /**
      * Asset of order
      */
     public String asset_name;
