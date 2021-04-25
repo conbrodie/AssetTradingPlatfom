@@ -46,9 +46,9 @@ public class TestUnit {
         assertEquals( new Unit("H", 1500, Collections.emptyMap()), b,"Failed to create an Organisational Unit");
     }
     @Test
-    public void  testIfCreditsAreTooBig() throws Exception {
+    public void  testIfCreditsIsTooBig() throws Exception {
         Unit b = unit.createUnit("HR Management", 2147483647);
-        assertEquals( new Unit("HR Management",147483647 , Collections.emptyMap()), b,"Failed to create an Organisational Unit");
+        assertEquals( new Unit("HR Management",2147483647 , Collections.emptyMap()), b,"Failed to create an Organisational Unit");
     }
     @Test
     public void testLeaveUnitNameBlank(){
@@ -60,6 +60,12 @@ public class TestUnit {
     public void testLeaveCreditsZero(){
         assertThrows(CredentialException.class, () ->{
             unit.createUnit("HR Management", 0);
+        });
+    }
+    @Test
+    public void testCreditsIsNegativeNumber(){
+        assertThrows(CredentialException.class, () ->{
+            unit.createUnit("HR Management", -10);
         });
     }
     @Test

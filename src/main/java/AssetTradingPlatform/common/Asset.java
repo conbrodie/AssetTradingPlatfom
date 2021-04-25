@@ -11,12 +11,13 @@ public class Asset {
     /**
      * Asset Name
      */
-    public String asset_name = null;
+    public String asset_name;
 
     /**
      * Create and save a new Asset
+     *
      * @param asset_name New assets name
      */
-    public Asset(String asset_name){
+    public Asset( String asset_name){
     }
 }
