@@ -4,9 +4,13 @@ import java.util.Date;
 import java.util.TreeMap;
 
 /**
- * Manages active orders including: fulfilling orders by matching them with others, moving fulfilled orders from active to historical
+ * Manages trades by matching orders
  */
 public class Market {
+    /**
+     * Unique ID of a trade
+     */
+    int trade_id;
     /**
      * Time which order was listed on market
      */
@@ -15,6 +19,14 @@ public class Market {
      * Time which order was fulfilled
      */
     Date trade_date = null;
+    /**
+     * ID of order being filled
+     */
+    int trade_buy;
+    /**
+     * ID of order filling the original order
+     */
+    int trade_sell;
 
     /**
      * Define market place which consists of two sets/tables to track active and non-active orders.
