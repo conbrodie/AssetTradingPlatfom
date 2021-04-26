@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="GUI.Base">
+  <grid id="27dc6" binding="background" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="1351" height="715"/>
+    </constraints>
+    <properties>
+      <background color="-14406844"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="c7747" binding="sideBar" layout-manager="FlowLayout" hgap="0" vgap="0" flow-align="1">
+        <constraints border-constraint="West"/>
+        <properties>
+          <background color="-14011825"/>
+          <enabled value="true"/>
+          <foreground color="-16777216"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="3be41" class="javax.swing.JButton" binding="button">
+            <constraints/>
+            <properties>
+              <alignmentY value="0.0"/>
+              <background color="-14142895"/>
+              <borderPainted value="false"/>
+              <contentAreaFilled value="true"/>
+              <foreground color="-1"/>
+              <maximumSize width="178" height="30"/>
+              <minimumSize width="100" height="80"/>
+              <preferredSize width="200" height="50"/>
+              <text value="Button Placeholder"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="9b910" binding="content" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="Center"/>
+        <properties>
+          <background color="-14406844"/>
+        </properties>
+        <border type="none"/>
+        <children/>
+      </grid>
+      <grid id="3dcb2" binding="topBar" layout-manager="FlowLayout" hgap="15" vgap="15" flow-align="0">
+        <constraints border-constraint="North"/>
+        <properties>
+          <background color="-14538947"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="f2bb2" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <horizontalAlignment value="2"/>
+              <horizontalTextPosition value="2"/>
+              <text value="LOGO"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
