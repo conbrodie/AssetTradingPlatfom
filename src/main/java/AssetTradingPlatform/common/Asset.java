@@ -1,4 +1,7 @@
 package AssetTradingPlatform.common;
+import AssetTradingPlatform.common.msgprotocol.addAsset;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * Asset Creation
@@ -18,6 +21,11 @@ public class Asset {
      *
      * @param asset_name New assets name
      */
-    public Asset( String asset_name){
+    public Asset(String asset_name) {
+        /**
+         * "Add Asset" btn, will bring up a dialog box, with a txt input.
+         *  Once confirmed it is added to the DB.
+         */
+        
     }
 }

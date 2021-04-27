@@ -1,4 +1,4 @@
-package msgprotocol;
+package AssetTradingPlatform.common.msgprotocol;
 
 public class moduser implements sqlQuery {
 

@@ -1,4 +1,6 @@
-package msgprotocol;
+package AssetTradingPlatform.common.msgprotocol;
+
+import AssetTradingPlatform.common.msgprotocol.sqlQuery;
 
 public class addAsset implements sqlQuery {
     /** Adding an asset to the DB

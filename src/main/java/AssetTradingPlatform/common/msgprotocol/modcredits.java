@@ -1,4 +1,4 @@
-package msgprotocol;
+package AssetTradingPlatform.common.msgprotocol;
 
 public class modcredits implements sqlQuery {
 
