@@ -1,4 +1,4 @@
-package AssetTradingPlatform.common.msgprotocol;
+package helpers.msgprotocol;
 
 import helpers.Constants;
 
@@ -12,9 +12,8 @@ import java.util.Arrays;
 
 public class DataTransfer {
     /**
-     *     Class used to send and receive messages between the client and server.
+     *  Class for sending data to and from the client and server.
      */
-
     public static String receiveMessage(Socket sock) throws IOException {
         /**
          * @action Used to receive message from client
@@ -22,18 +21,16 @@ public class DataTransfer {
          * @comment receive xml transport messages
          * @return contents of server's message
          */
-
         DataInputStream dis = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
-        byte[] header = new byte[Constants.HEADER_SIZE];
+        byte[]header = new byte[Constants.HEADER_SIZE];
 
-        dis.readFully(header, 0, 4);
-        int size = DecodeHeader(header); // get the length of the data following the header
+        dis.readFully(header,0,4);
+        int size = DecodeHeader(header);
         byte[] data = new byte[size];
-        dis.readFully(data, 0, size);
+        dis.readFully(data,0,size);
 
         return new String(data, StandardCharsets.UTF_8);
     }
-
     public static void sendMessage(Socket sock, String message) throws IOException {
         /**
          * @action Used to send message to client
@@ -46,16 +43,14 @@ public class DataTransfer {
         DataOutputStream dos = new DataOutputStream(sock.getOutputStream());
         byte[] byteData= message.getBytes(StandardCharsets.UTF_8);
         int length = byteData.length;
-        byte[] sendHeader = EncodeHeader(length, Constants.HEADER_SIZE); // set the length of msg data
-        // Prepare the message to be sent "header - 4 bytes (no of message bytes), followed by message data bytes"
-        byte[] dataWithHeader = Arrays.copyOf(sendHeader, sendHeader.length + byteData.length);
-        System.arraycopy(byteData, 0,  dataWithHeader, sendHeader.length, byteData.length);
-        dos.write(dataWithHeader); // now send to server...
+        byte[] sendHeader = EncodeHeader(length,Constants.HEADER_SIZE);
+        byte[] dataWithHeader = Arrays.copyOf(sendHeader,sendHeader.length + byteData.length);
+        System.arraycopy(byteData,0,dataWithHeader,sendHeader.length, byteData.length);
+        dos.write(dataWithHeader);
         dos.flush();
     }
 
-    public static byte[] EncodeHeader(int msglen_, int size_)
-    {
+    public static byte[] EncodeHeader(int msglen_, int size_){
         // Used to encode an integer to an array of bytes.
         // In this case encode the XML messages length to a 4 byte array.
 
@@ -68,7 +63,6 @@ public class DataTransfer {
 
         return header;
     }
-
     public static int DecodeHeader(byte[] bytes_)
     {
         // Used to decode an array of bytes to an integer.

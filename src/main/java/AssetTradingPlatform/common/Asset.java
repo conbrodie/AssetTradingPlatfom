@@ -1,7 +1,4 @@
 package AssetTradingPlatform.common;
-import AssetTradingPlatform.common.msgprotocol.addAsset;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 /**
  * Asset Creation
