@@ -28,27 +28,27 @@ public class TestUnit {
     @Test
     public void  testSuccessCreateOrgUnit() throws Exception {
         Unit b = unit.createUnit("HR Management", 1500);
-        assertEquals( new Unit("HR Management", 1500, Collections.emptyMap()), b,"Failed to create an Organisational Unit");
+        assertEquals( new Unit("HR Management", 1500), b,"Failed to create an Organisational Unit");
     }
     @Test
     public void  testSpecialCharacterInUnitName() throws Exception {
         Unit b = unit.createUnit("HR@Management", 1500);
-        assertEquals( new Unit("HR@Management", 1500, Collections.emptyMap()), b,"Failed to create an Organisational Unit");
+        assertEquals( new Unit("HR@Management", 1500), b,"Failed to create an Organisational Unit");
     }
     @Test
     public void  testMinStringLengthUnitName() throws Exception {
         Unit b = unit.createUnit("H", 1);
-        assertEquals( new Unit("H", 1, Collections.emptyMap()), b,"Failed to create an Organisational Unit");
+        assertEquals( new Unit("H", 1), b,"Failed to create an Organisational Unit");
     }
     @Test
     public void  testMaxStringLengthUnitName() throws Exception {
         Unit b = unit.createUnit("aaaaaaaaaaaaaaaa", 1500);
-        assertEquals( new Unit("H", 1500, Collections.emptyMap()), b,"Failed to create an Organisational Unit");
+        assertEquals( new Unit("H", 1500), b,"Failed to create an Organisational Unit");
     }
     @Test
     public void  testIfCreditsIsTooBig() throws Exception {
         Unit b = unit.createUnit("HR Management", 2147483647);
-        assertEquals( new Unit("HR Management",2147483647 , Collections.emptyMap()), b,"Failed to create an Organisational Unit");
+        assertEquals( new Unit("HR Management",2147483647), b,"Failed to create an Organisational Unit");
     }
     @Test
     public void testLeaveUnitNameBlank(){
