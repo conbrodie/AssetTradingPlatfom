@@ -18,7 +18,7 @@ public class Market {
     /**
      * Time which order was fulfilled
      */
-    Date trade_date = null;
+    Date date_fulfilled = null;
     /**
      * ID of order being filled
      */

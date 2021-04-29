@@ -12,7 +12,7 @@ public class Unit {
     /**
      * Temporary set to store a units assets and their amounts until connected to DB
      */
-    public Map<String, Asset> org_assets;
+    public Map<String, Integer> org_assets = null;
 
 
 
@@ -22,7 +22,7 @@ public class Unit {
      * @param org_unit_name New unit name
      * @throws Exception Unit name already exists
      */
-    public Unit(String org_unit_name, int credits, Map<String, Asset> org_assets) throws Exception{
+    public Unit(String org_unit_name, int credits) throws Exception{
 
     }
 
