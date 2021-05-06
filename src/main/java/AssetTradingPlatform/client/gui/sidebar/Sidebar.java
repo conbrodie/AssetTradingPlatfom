@@ -15,7 +15,7 @@ public class Sidebar extends JTree {
 
     private String[] unitListItems = {"Create Unit"};
     private String[] assetListItems = {"Create Asset"};
-    private String[] userListItems = {"Change Password"};
+    private String[] userListItems = {"Register", "Change Password"};
 
     public Sidebar() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
@@ -44,23 +44,23 @@ public class Sidebar extends JTree {
     private void createTreeNodes(DefaultTreeModel model) {
 
         Map<String, String[]> map;
-        DefaultMutableTreeNode parentNode;
-        DefaultMutableTreeNode node;
+
+
         Dimension d64 = new Dimension(24, 64);
 
         map = new HashMap<String, String[]>();
-        map.put("Units", unitListItems);
-        map.put("Assets", assetListItems);
-        map.put("Users", userListItems);
+//        map.put("Units", unitListItems);
+//        map.put("Assets", assetListItems);
+        map.put("Login", new String[]{ });
+        map.put("Users", new String[]{"Register", "Change Password"});
 
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
         for (Map.Entry<String, String[]> entry : map.entrySet()) {
-            parentNode = (DefaultMutableTreeNode) model.getRoot();
-            node = new DefaultMutableTreeNode(entry.getKey());
-            model.insertNodeInto(node, parentNode, parentNode.getChildCount());
+            DefaultMutableTreeNode category = new DefaultMutableTreeNode(entry.getKey());
+            model.insertNodeInto(category, root, root.getChildCount());
             for (String value: entry.getValue()) {
-                parentNode = node;
-                node = new DefaultMutableTreeNode(value);
-                model.insertNodeInto(node, parentNode, parentNode.getChildCount());
+                DefaultMutableTreeNode child = new DefaultMutableTreeNode(value);
+                model.insertNodeInto(child, category, category.getChildCount());
             }
         }
 

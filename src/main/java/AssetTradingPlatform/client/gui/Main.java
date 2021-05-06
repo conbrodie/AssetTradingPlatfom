@@ -7,6 +7,8 @@ import AssetTradingPlatform.client.gui.sidebar.Sidebar;
 import AssetTradingPlatform.client.gui.titlebar.TitleBar;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 
 public class Main extends JFrame implements Runnable {
@@ -50,16 +52,28 @@ public class Main extends JFrame implements Runnable {
         // make cards
         pnlCards = new JPanel();
         pnlCards.setLayout(new CardLayout());
-        pnlCards.add(pnlLogin, "LOGIN");
-        pnlCards.add(pnlRegister, "REGISTER");
+        pnlCards.add(pnlLogin, "Login");
+        pnlCards.add(pnlRegister, "Register");
 
-        ((CardLayout)pnlCards.getLayout()).show(pnlCards, "LOGIN");
+
 
         //position components in the panel
         pnlCenter.setLayout((new GridBagLayout()));
         addToPanel(pnlCenter, pnlCards, Gbc.nu( 0, 0, 1, 1));
         pack();
         setVisible(true);
+
+        sidebar.addTreeSelectionListener(evt -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                    sidebar.getLastSelectedPathComponent();
+
+            /* if nothing is selected */
+            if (node == null) return;
+
+            /* retrieve the node that was selected */
+            String name = (String)node.getUserObject();
+            ((CardLayout)pnlCards.getLayout()).show(pnlCards, name);
+        });
     }
 
     private JPanel createPanel(Color color) {
