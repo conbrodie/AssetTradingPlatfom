@@ -1,6 +1,6 @@
 package AssetTradingTest.common.server.dal;
 
-import AssetTradingTest.common.server.Utilities;
+import AssetTradingTest.common.server.dal.Utilities;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

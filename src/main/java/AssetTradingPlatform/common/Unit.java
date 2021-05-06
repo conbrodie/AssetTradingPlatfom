@@ -23,11 +23,11 @@ public class Unit {
      * @param name New unit name
      * @throws Exception Unit name already exists
      */
-    public Unit(String name) throws Exception{
+    public Unit(String name, int credits) throws Exception{
         org_unit_name = name;
         org_unit_id = counter_id + 1;
         counter_id += 1;
-        credits = 0;
+        this.credits = credits;
     }
 
 
