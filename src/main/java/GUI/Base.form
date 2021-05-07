@@ -9,27 +9,30 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="c7747" binding="sideBar" layout-manager="FlowLayout" hgap="0" vgap="0" flow-align="1">
+      <grid id="c7747" binding="sideBar" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints border-constraint="West"/>
         <properties>
           <background color="-14011825"/>
           <enabled value="true"/>
           <foreground color="-16777216"/>
+          <preferredSize width="200" height="60"/>
         </properties>
         <border type="none"/>
         <children>
-          <component id="3be41" class="javax.swing.JButton" binding="button">
-            <constraints/>
+          <component id="77693" class="javax.swing.JTree" binding="menu">
+            <constraints border-constraint="Center"/>
             <properties>
-              <alignmentY value="0.0"/>
-              <background color="-14142895"/>
-              <borderPainted value="false"/>
-              <contentAreaFilled value="true"/>
-              <foreground color="-1"/>
-              <maximumSize width="178" height="30"/>
-              <minimumSize width="100" height="80"/>
-              <preferredSize width="200" height="50"/>
-              <text value="Button Placeholder"/>
+              <background color="-1"/>
+              <editable value="false"/>
+              <foreground color="-58837"/>
+              <inheritsPopupMenu value="false"/>
+              <invokesStopCellEditing value="false"/>
+              <largeModel value="false"/>
+              <opaque value="false"/>
+              <rootVisible value="false"/>
+              <rowHeight value="40"/>
+              <scrollsOnExpand value="false"/>
+              <showsRootHandles value="false"/>
             </properties>
           </component>
         </children>
@@ -43,19 +46,27 @@
         <border type="none"/>
         <children/>
       </grid>
-      <grid id="3dcb2" binding="topBar" layout-manager="FlowLayout" hgap="15" vgap="15" flow-align="0">
+      <grid id="3dcb2" binding="topBar" layout-manager="BorderLayout" hgap="10" vgap="20">
         <constraints border-constraint="North"/>
         <properties>
+          <alignmentX value="0.5"/>
           <background color="-14538947"/>
+          <preferredSize width="189" height="45"/>
         </properties>
         <border type="none"/>
         <children>
           <component id="f2bb2" class="javax.swing.JLabel">
-            <constraints/>
+            <constraints border-constraint="Center"/>
             <properties>
               <horizontalAlignment value="2"/>
               <horizontalTextPosition value="2"/>
               <text value="LOGO"/>
+            </properties>
+          </component>
+          <component id="ca009" class="javax.swing.JLabel">
+            <constraints border-constraint="East"/>
+            <properties>
+              <text value="UserName Placeholder"/>
             </properties>
           </component>
         </children>

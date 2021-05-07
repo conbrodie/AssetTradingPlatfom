@@ -1,5 +1,7 @@
 package AssetTradingTest.common.models;
 
+import AssetTradingPlatform.common.Asset;
+
 public class AssetModel {
     private int asset_id;
     private String asset_name;
