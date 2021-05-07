@@ -1,3 +1,7 @@
 Thread 1   AssetTradingTest.common.server.Server main Sat May 01 10:07:03 AEST 2021 INFO Server started, listening for client on port: 9000
 Thread 1   AssetTradingTest.common.server.Server main Sat May 01 10:07:25 AEST 2021 INFO Server started, listening for client on port: 9000
 Thread 17  AssetTradingTest.common.server.Server run Sat May 01 10:07:25 AEST 2021 INFO Ready to accept clients!
+Thread 1   AssetTradingTest.common.server.Server main Fri May 07 14:43:13 AEST 2021 INFO Server started, listening for client on port: 9000
+Thread 15  AssetTradingTest.common.server.Server run Fri May 07 14:43:13 AEST 2021 INFO Ready to accept clients!
+Thread 1   AssetTradingTest.common.server.Server main Fri May 07 14:48:08 AEST 2021 INFO Server started, listening for client on port: 9000
+Thread 15  AssetTradingTest.common.server.Server run Fri May 07 14:48:08 AEST 2021 INFO Ready to accept clients!
