@@ -2,6 +2,7 @@ package AssetTradingPlatform.client.gui.panels;
 
 import AssetTradingPlatform.client.gui.Gbc;
 import AssetTradingPlatform.client.gui.GuiColours;
+import AssetTradingPlatform.client.gui.buttons.ButtonOutline;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,7 @@ public class Login extends JPanel {
     private JTextField username = new JTextField(30);
     private JLabel lblPassword = new JLabel("Password");
     private JTextField password = new JTextField(30);;
-    private JButton btnLogin = new JButton("Login");
+    private ButtonOutline btnLogin = new ButtonOutline("Login");
 
     public Login() {
         loginGui();

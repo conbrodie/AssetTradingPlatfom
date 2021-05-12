@@ -1,7 +1,7 @@
 package AssetTradingPlatform.client.gui;
 
 
-import AssetTradingPlatform.client.gui.panels.ChangePassword;
+// import AssetTradingPlatform.client.gui.panels.ChangePassword;
 import AssetTradingPlatform.client.gui.panels.Login;
 import AssetTradingPlatform.client.gui.panels.OrganisationUnits;
 import AssetTradingPlatform.client.gui.panels.Register;

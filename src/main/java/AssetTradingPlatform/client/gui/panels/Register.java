@@ -2,6 +2,7 @@ package AssetTradingPlatform.client.gui.panels;
 
 import AssetTradingPlatform.client.gui.Gbc;
 import AssetTradingPlatform.client.gui.GuiColours;
+import AssetTradingPlatform.client.gui.buttons.ButtonOutline;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +17,7 @@ public class Register extends JPanel {
     private JTextField confirmPassword = new JTextField(30);
     private JLabel lblOrganisation = new JLabel("Organisation");
     private JComboBox<String> organisation = new JComboBox<>(new String[] { "Org 1"});
-    private JButton btnRegister = new JButton("Register");
+    private ButtonOutline btnRegister = new ButtonOutline("Register");
 
     public Register() {
         createGui();
