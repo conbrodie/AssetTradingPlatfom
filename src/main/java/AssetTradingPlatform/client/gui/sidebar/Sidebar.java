@@ -13,10 +13,6 @@ import java.util.Map;
 
 public class Sidebar extends JTree {
 
-    private String[] unitListItems = {"Create Unit"};
-    private String[] assetListItems = {"Create Asset"};
-    private String[] userListItems = {"Register", "Change Password"};
-
     public Sidebar() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
         DefaultTreeModel model =(DefaultTreeModel) getModel();
@@ -49,10 +45,9 @@ public class Sidebar extends JTree {
         Dimension d64 = new Dimension(24, 64);
 
         map = new HashMap<String, String[]>();
-//        map.put("Units", unitListItems);
-//        map.put("Assets", assetListItems);
         map.put("Login", new String[]{ });
         map.put("Users", new String[]{"Register", "Change Password"});
+        map.put("Organisations", new String[]{"Organisation Units"});
 
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
         for (Map.Entry<String, String[]> entry : map.entrySet()) {

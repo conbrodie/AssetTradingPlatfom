@@ -5,6 +5,7 @@ import AssetTradingPlatform.client.gui.GuiColours;
 
 import javax.swing.*;
 import java.awt.*;
+import static AssetTradingPlatform.client.gui.Gbc.addToPanel;
 
 public class Login extends JPanel {
     private JLabel lblTitle = new JLabel("Login");
@@ -29,8 +30,5 @@ public class Login extends JPanel {
         addToPanel(this, password, Gbc.nu(1, 2, 1, 1).pad(5));
         addToPanel(this, btnLogin, Gbc.nu(0, 3, 2, 1).pad(5));
 
-    }
-    private void addToPanel(JPanel jp, Component c, Gbc g) {
-        jp.add(c, g.build());
     }
 }

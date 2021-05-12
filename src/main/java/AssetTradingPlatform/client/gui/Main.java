@@ -1,15 +1,20 @@
 package AssetTradingPlatform.client.gui;
 
 
+import AssetTradingPlatform.client.gui.panels.ChangePassword;
 import AssetTradingPlatform.client.gui.panels.Login;
+import AssetTradingPlatform.client.gui.panels.OrganisationUnits;
 import AssetTradingPlatform.client.gui.panels.Register;
 import AssetTradingPlatform.client.gui.sidebar.Sidebar;
 import AssetTradingPlatform.client.gui.titlebar.TitleBar;
+import AssetTradingPlatform.common.Unit;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Main extends JFrame implements Runnable {
 
@@ -23,6 +28,7 @@ public class Main extends JFrame implements Runnable {
     private JPanel pnlCards;
     private JPanel pnlLogin;
     private JPanel pnlRegister;
+    private OrganisationUnits pnlOrgUnits;
 
 
 
@@ -40,7 +46,21 @@ public class Main extends JFrame implements Runnable {
         pnlLogin = new Login();
         // create Register panel
         pnlRegister = new Register();
+        // create Organisation Units panel
+        pnlOrgUnits = new OrganisationUnits();
+        ArrayList<Unit> unitList = new ArrayList<>();
+        unitList.add(new Unit("ComputeClusterDivision", 5000));
+        unitList.add(new Unit("Software Access Management", 2466));
+        unitList.add(new Unit("HR Management", 1500));
 
+
+        pnlOrgUnits.setData(unitList);
+
+
+
+        pnlOrgUnits.addActionListener(event -> {
+            System.out.println("Show org unit " + event.getActionCommand());
+        });
 
         //create panel around edges
         sidebar = new Sidebar();
@@ -54,7 +74,7 @@ public class Main extends JFrame implements Runnable {
         pnlCards.setLayout(new CardLayout());
         pnlCards.add(pnlLogin, "Login");
         pnlCards.add(pnlRegister, "Register");
-
+        pnlCards.add(pnlOrgUnits, "Organisation Units");
 
 
         //position components in the panel

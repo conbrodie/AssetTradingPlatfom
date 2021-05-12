@@ -1,6 +1,7 @@
 package AssetTradingPlatform.client.gui;
 
-import java.awt.GridBagConstraints;
+import javax.swing.*;
+import java.awt.*;
 
 public class Gbc {
     private int x;
@@ -134,5 +135,8 @@ public class Gbc {
         return Gbc.nu().xy(x, y, w, h);
     }
 
+    public static void addToPanel(JPanel jp, Component c, Gbc g) {
+        jp.add(c, g.build());
+    }
 }
 
