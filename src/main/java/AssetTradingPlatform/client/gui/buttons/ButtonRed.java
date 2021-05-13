@@ -9,9 +9,9 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class ButtonRed extends JButton {
-    public ButtonRed(String text){
-        LineBorder border1 = new LineBorder(Color.decode("#810000"));
-        EmptyBorder border2 = new EmptyBorder(5,10,5,10);
+    public ButtonRed(String text, int width, int height){
+        LineBorder border1 = new LineBorder(Color.decode("#810000"), 3, true);
+        EmptyBorder border2 = new EmptyBorder(height,width,height,width);
         Border newBorder = BorderFactory.createCompoundBorder(border1, border2);
         this.setText(text);
         this.setBackground(Color.decode("#ce1212"));

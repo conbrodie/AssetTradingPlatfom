@@ -17,7 +17,7 @@ public class Register extends JPanel {
     private JTextField confirmPassword = new JTextField(30);
     private JLabel lblOrganisation = new JLabel("Organisation");
     private JComboBox<String> organisation = new JComboBox<>(new String[] { "Org 1"});
-    private ButtonOutline btnRegister = new ButtonOutline("Register");
+    private ButtonOutline btnRegister = new ButtonOutline("Register",10,5);
 
     public Register() {
         createGui();

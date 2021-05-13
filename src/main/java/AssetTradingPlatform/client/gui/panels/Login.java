@@ -14,7 +14,7 @@ public class Login extends JPanel {
     private JTextField username = new JTextField(30);
     private JLabel lblPassword = new JLabel("Password");
     private JTextField password = new JTextField(30);;
-    private ButtonOutline btnLogin = new ButtonOutline("Login");
+    private ButtonOutline btnLogin = new ButtonOutline("Login", 10,5);
 
     public Login() {
         loginGui();
