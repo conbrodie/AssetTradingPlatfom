@@ -1,31 +1,31 @@
 package AssetTradingPlatform.client.gui.model;
 
-import AssetTradingPlatform.common.Unit;
+import AssetTradingPlatform.common.Order;
 
-import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.Collections;
 import java.util.List;
 
-public class UnitTableModel extends AbstractTableModel {
-    private List<Unit> units;
-    private static String[] columns = new String[]{"Org Unit", "Total Assets", "Total Credits", ""};
-    public UnitTableModel(List<Unit> units) {
-        this.units = units;
+public class OrgTradeTableModel extends AbstractTableModel {
+    private List<Order> orders;
+    private static String[] columns = new String[]{"Status", "Org Unit", "Asset Name", "Quantity", "Price", ""};
+
+    public OrgTradeTableModel(List<Order> orders) {
+        this.orders = orders;
     }
 
-    public UnitTableModel() {
+    public OrgTradeTableModel() {
         this(Collections.emptyList());
     }
 
-    public void setUnits(List<Unit> units) {
-        this.units = units;
+    public void setUnits(List<Order> orders) {
+        this.orders = orders;
         fireTableDataChanged();
     }
 
     @Override
     public int getRowCount() {
-        return units.size();
+        return orders.size();
     }
 
     @Override
@@ -50,16 +50,18 @@ public class UnitTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Unit unit  = units.get(rowIndex);
+        Order order  = orders.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return unit.getOrgUnitName();
+                return order.getTrade_type();
             case 1:
-                return unit.getOrgAssets().size();
+                return order.getUnit_id();
             case 2:
-                return unit.getCredits();
+                return order.getAsset_name();
             case 3:
-                return unit.getOrgUnitId();
+                return order.getQuantity();
+            case 4:
+                return order.getPrice();
         }
         return null;
     }

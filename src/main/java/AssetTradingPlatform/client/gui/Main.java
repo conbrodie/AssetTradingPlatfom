@@ -5,8 +5,11 @@ package AssetTradingPlatform.client.gui;
 import AssetTradingPlatform.client.gui.panels.Login;
 import AssetTradingPlatform.client.gui.panels.OrganisationUnits;
 import AssetTradingPlatform.client.gui.panels.Register;
+import AssetTradingPlatform.client.gui.panels.Trade;
 import AssetTradingPlatform.client.gui.sidebar.Sidebar;
 import AssetTradingPlatform.client.gui.titlebar.TitleBar;
+import AssetTradingPlatform.common.Order;
+import AssetTradingPlatform.common.OrderRequest;
 import AssetTradingPlatform.common.Unit;
 
 import javax.swing.*;
@@ -29,7 +32,7 @@ public class Main extends JFrame implements Runnable {
     private JPanel pnlLogin;
     private JPanel pnlRegister;
     private OrganisationUnits pnlOrgUnits;
-
+    private Trade pnlTrade;
 
 
     private void createGui() {
@@ -52,9 +55,24 @@ public class Main extends JFrame implements Runnable {
         unitList.add(new Unit("ComputeClusterDivision", 5000));
         unitList.add(new Unit("Software Access Management", 2466));
         unitList.add(new Unit("HR Management", 1500));
+        //create Trade Panel
+        pnlTrade = new Trade();
+        ArrayList<Order> orders = new ArrayList<>();
+        try {
+            orders.add(new Order(OrderRequest.BUY, "test", 5, 10));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        for (Order order : orders) {
+            System.out.println( order.getAsset_name());
+        }
 
 
         pnlOrgUnits.setData(unitList);
+        pnlTrade.setData(orders);
 
 
 
@@ -75,6 +93,7 @@ public class Main extends JFrame implements Runnable {
         pnlCards.add(pnlLogin, "Login");
         pnlCards.add(pnlRegister, "Register");
         pnlCards.add(pnlOrgUnits, "Organisation Units");
+        pnlCards.add(pnlTrade, "Trade");
 
 
         //position components in the panel
