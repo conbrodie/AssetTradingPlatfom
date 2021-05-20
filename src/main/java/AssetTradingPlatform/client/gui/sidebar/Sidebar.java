@@ -45,6 +45,7 @@ public class Sidebar extends JTree {
         Dimension d64 = new Dimension(24, 64);
 
         map = new HashMap<String, String[]>();
+        map.put("Trade", new String[]{ });
         map.put("Login", new String[]{ });
         map.put("Users", new String[]{"Register", "Change Password"});
         map.put("Organisations", new String[]{"Organisation Units"});
