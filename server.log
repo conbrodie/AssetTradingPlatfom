@@ -50,3 +50,15 @@ Thread 14  server.Server run Tue May 25 14:52:31 AEST 2021 INFO Ready to accept 
 Thread 14  server.Server run Tue May 25 14:53:23 AEST 2021 INFO Client1 has connected.
 Thread 14  server.Server run Tue May 25 14:53:23 AEST 2021 INFO Ready to accept clients!
 Thread 17  server.ServerLogic ProcessCommand Tue May 25 14:53:23 AEST 2021 INFO User 'stock.c' has signed in successfully
+Thread 1   server.Server main Sat May 29 18:31:17 AEST 2021 INFO Server started, listening for client on port: 9000
+Thread 14  server.Server run Sat May 29 18:31:17 AEST 2021 INFO Reconcile scheduler service will start in '20' seconds
+Thread 14  server.Server run Sat May 29 18:31:17 AEST 2021 INFO Ready to accept clients!
+Thread 14  server.Server run Sat May 29 18:31:32 AEST 2021 INFO Client1 has connected.
+Thread 14  server.Server run Sat May 29 18:31:32 AEST 2021 INFO Ready to accept clients!
+Thread 16  server.ServerLogic ProcessCommand Sat May 29 18:31:32 AEST 2021 INFO User 'stock.c' has signed in successfully
+Thread 16  server.ServerThread run Sat May 29 18:31:34 AEST 2021 INFO Client says 'bye'
+Thread 1   server.Server main Sat May 29 18:31:36 AEST 2021 SEVERE Server Main Exception: null
+Thread 1   server.Server main Sat May 29 18:31:36 AEST 2021 INFO Stopping Server
+Thread 1   server.Server stop Sat May 29 18:31:36 AEST 2021 INFO Reconcile scheduler requested to shutdown.
+Thread 1   server.Server stop Sat May 29 18:31:36 AEST 2021 INFO Reconcile scheduler service has shutdown.
+Thread 1   server.Server stop Sat May 29 18:31:36 AEST 2021 INFO Client threads: {}
