@@ -1,0 +1,12 @@
+
+#1. defect in Chart - private XYDataset createTradedSeriesDataset() method - had to adjust
+    SELL and BUY datetime values so they would be different else graph does not show them.
+    Need a better solution!
+
+#2. defect in MainFrame - private boolean refreshAssets() method - not working as expected.
+
+#3. added client and server properties to resources. Mainly initialDelay and Period values. Also added a property
+    is allow the schedulers not to be run.
+
+#4. ?
+

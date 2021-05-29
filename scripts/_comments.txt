@@ -1,0 +1,14 @@
+*** Remember to change the database NAME in all scripts when running them ***
+
+So check in Drop, Create, and Use statements before executing the sql script...
+
+Also need to check the values in db.prop. Change as necessary
+
+1) Run create_asset_trader_with_procedures (it also has data)
+
+OR
+
+1) Run create_asset_trader
+2) Run reset_asset_trader
+3) Run sp_process_trades
+4) Run ap_process_trade_request

@@ -1,0 +1,6 @@
+-- values (for delay and period) are in Seconds
+-- values for useScheduler either true or false
+
+useScheduler=true
+delay=20
+period=10

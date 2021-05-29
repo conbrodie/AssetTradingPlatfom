@@ -1,0 +1,118 @@
+DROP PROCEDURE IF EXISTS sp_process_trade_request
+CREATE
+DEFINER = 'root'@'%'
+PROCEDURE asset_trader.sp_process_trade_request(IN in_trade_type nvarchar(4),
+                                    IN in_user_id int, IN in_org_unit_id int,
+                                    IN in_asset_id int, IN in_quantity int,
+                                    IN in_price int, OUT out_event_no int,
+                                    OUT out_message nvarchar(256),
+                                    OUT out_trade_id int)
+this_proc:
+
+  BEGIN
+
+  --
+  -- Version 1.0
+  --
+
+    DECLARE v_username,
+            v_asset_name,
+            v_org_unit_name nvarchar(35);
+
+    DECLARE v_total_credits_committed int DEFAULT 0;
+    DECLARE v_total_credits_available int DEFAULT 0;
+    DECLARE v_asset_quantity_held int DEFAULT 0;
+    DECLARE v_total_asset_on_offer int DEFAULT 0;
+
+    -- Other variables...
+    DECLARE track_no int DEFAULT 0;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION, NOT FOUND, SQLWARNING
+
+    BEGIN
+      ROLLBACK;
+      GET DIAGNOSTICS CONDITION 1 @`errno` = MYSQL_ERRNO, @`sqlstate` = RETURNED_SQLSTATE, @`text` = MESSAGE_TEXT;
+      SET @full_error = CONCAT('ERROR ', @`errno`, ' (', @`sqlstate`, '): ', @`text`);
+      SELECT track_no, @full_error;
+      SET out_event_no := track_no;
+      SET out_message := @full_error;
+    END;
+
+    START TRANSACTION;
+      -- Checks
+      SET FOREIGN_KEY_CHECKS = 0;
+      SET track_no = 1;
+
+      -- Check if the trade_type is for a SELL and a BUY for the expected 'trade_id' passed into procedure
+       IF NOT (in_trade_type = 'SELL' OR in_trade_type = 'BUY') THEN
+         SET out_message := 'Must be either a BUY or SELL trade type';
+         LEAVE this_proc; -- EXIT procedure
+       END IF;
+
+      -- Load the local variables
+      -- select username
+      SELECT username INTO v_username
+      FROM user
+      WHERE user_id = in_user_id;
+      -- select Org Unit Name
+      SELECT org_unit_name INTO v_org_unit_name
+      FROM org_unit
+      WHERE org_unit_id = in_org_unit_id;
+      -- select Asset Name
+      SELECT asset_name INTO v_asset_name
+      FROM asset
+      WHERE asset_id = in_asset_id;
+
+
+      SET out_trade_id := -1; -- default setting
+      IF (in_trade_type = 'BUY')  THEN
+        -- Check that org unit has enough credits for this offer and other offers already in place
+        SELECT COALESCE(credits, 0) INTO v_total_credits_available
+        FROM org_unit
+        WHERE org_unit_id = in_org_unit_id;
+
+        SELECT COALESCE(SUM(price * quantity), 0 ) INTO v_total_credits_committed
+        FROM trade_current
+        WHERE trade_type = 'BUY' AND org_unit_id = in_org_unit_id;
+
+
+        IF v_total_credits_available >= (v_total_credits_committed + (in_quantity * in_price)) THEN
+          -- add the BUY request
+          INSERT INTO trade_current (trade_type, user_id, username, org_unit_id, org_unit_name, asset_id, asset_name, quantity, price, trade_date)
+          VALUES ('BUY', in_user_id, v_username, in_org_unit_id, v_org_unit_name, in_asset_id, v_asset_name, in_quantity, in_price, NOW());
+          SET out_trade_id := LAST_INSERT_ID();
+        ELSE
+          SET out_message := 'Not enough credits available';
+          LEAVE this_proc; -- EXIT procedure
+        END IF;
+      ELSE -- must be 'SELL'
+        -- Check that the organisation holds enough assets for this sale
+        SELECT  COALESCE(quantity, 0) INTO v_asset_quantity_held
+        FROM asset_holding
+        WHERE org_unit_id = in_org_unit_id AND asset_id = in_asset_id;
+        SELECT COALESCE(SUM(quantity), 0) INTO v_total_asset_on_offer
+        FROM trade_current
+        WHERE trade_type = 'SELL'
+        AND org_unit_id = in_org_unit_id;
+
+        IF v_asset_quantity_held >= (v_total_asset_on_offer + in_quantity) THEN
+          -- add the SELL request
+          INSERT INTO trade_current (trade_type, user_id, username, org_unit_id, org_unit_name, asset_id, asset_name, quantity, price, trade_date)
+          VALUES ('SELL', in_user_id, v_username, in_org_unit_id, v_org_unit_name, in_asset_id, v_asset_name, in_quantity, in_price, NOW());
+          SET out_trade_id := LAST_INSERT_ID();
+        ELSE
+          SET out_message := 'Not enough assets held';
+          LEAVE this_proc; -- EXIT procedure
+        END IF;
+      END IF;
+
+      -- Check if '
+      SET track_no = 2;
+
+      SET FOREIGN_KEY_CHECKS = 1;
+      SET track_no = 3;
+
+      SELECT track_no, 'Procedure successfully executed.';
+      SET out_event_no := track_no;
+      SET out_message := 'Ok';
+    COMMIT;
+  END

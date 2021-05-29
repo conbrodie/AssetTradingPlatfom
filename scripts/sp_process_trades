@@ -1,0 +1,359 @@
+DROP PROCEDURE IF EXISTS sp_process_trades
+CREATE
+DEFINER = 'root'@'%'
+PROCEDURE sp_process_trades(OUT out_event_no int,
+                            OUT out_message nvarchar(256))
+BLOCK1: BEGIN
+
+  -- Possible solution ?
+  --
+  -- Version 1.1
+  -- There are two nested loops (1) getSell (2) getBuy.
+  -- The getSell loop gets all SELL offers in trade_date ascending order, meaning
+  -- oldest SELL offers are processed first.
+  -- These SELL offers are processed one at a time, the getBuy loop will have
+  -- every BUY offer for the SELL offer's asset. The SELL offers quantity and
+  -- price are then examined againt the BUY offer's values - quantity and price.
+  --
+  -- The main aim is to complete the SELL offer.
+  --
+  -- A downward leeway is applied to the sell price if the buy price <> sell price
+  -- before processing takes place of the SELL order. This occurs for each BUY offer.
+  -- The leeway allows the SELL price to be more easily processed - stale mate
+  -- mitigation ?.
+  --
+  -- If the SELL offer's quantity is greater than the BUY offer's quantity then the
+  -- price is examined. Remember we would not be here if the price was not acceptable.
+  -- The offer is processed, the SELL offer's asset holding is reduced and the
+  -- BUY offer's holding quantity is increased. Entries are inserted into the
+  -- trade_history table. The SELL offer's quantity is reduced by the amount sold and
+  -- the next BUY offer is checked to further forefill the SELl offer. If the next
+  -- BUY offer can not complete the deal then the same process occurs. This may or may
+  -- not complete the SELL offer.
+  -- Note: if the BUY price is more than the SELL price then to purchase is still
+  -- carried out but the BUYer only has to pay the SELL price.
+  --
+  --
+  -- If the SELL offer's quantity is less than the BUY offer's quantity then the
+  -- BUY offer's quantity is reduced and the now competed SELL offer and
+  -- partial BUY details are transferred to the trade history table.
+  -- The BUY loop is exited and the next SELL offer will then be processed.
+  --
+  -- If the SELL offer's quantity equals the BUY offer's quantity then now
+  -- completed the now completed SELL offer and BUY details are transferred
+  -- to the trade history table.
+  -- The BUY loop is exited and the next SELL offer will then be processed.
+  --
+  -- In all cases if the BUY price is less than the SELL price then an adjustment
+  -- is made to the BUY offer's price and if it equals or exceeds the SELL offer
+  -- then the deal goes through and the necessary adjustments are made.
+  -- The adjusted BUY price becomes the sell price, if the adjusted price was
+  -- greater then the SELL price then the SELl price is the sale price.
+  --
+  -- This process continues...
+
+  DECLARE v_leeway_percentage INTEGER DEFAULT 15; -- 15% leeway value
+
+  DECLARE sell_no_more_rows BOOLEAN DEFAULT FALSE;
+	DECLARE v_sell_trade_id INTEGER DEFAULT 0;
+	DECLARE v_sell_trade_type NVARCHAR(4);
+	DECLARE v_sell_org_unit_id INTEGER DEFAULT 0;
+	DECLARE v_sell_org_unit_name NVARCHAR(35);
+	DECLARE v_sell_user_id INTEGER DEFAULT 0;
+	DECLARE v_sell_username NVARCHAR(35);
+	DECLARE v_sell_asset_id INTEGER DEFAULT 0;
+	DECLARE v_sell_asset_name NVARCHAR(35);
+	DECLARE v_sell_quantity INTEGER DEFAULT 0;
+	DECLARE v_sell_price INTEGER DEFAULT 0;
+  DECLARE v_sell_trade_date TIMESTAMP;
+  DECLARE track_no INTEGER DEFAULT 0; -- attempt to track progress...
+
+	-- declare cursor for SELL offers
+	DECLARE curSell
+		CURSOR FOR
+			SELECT trade_id, trade_type, org_unit_id, org_unit_name, user_id,
+             username, asset_id, asset_name, quantity, price, trade_date
+      FROM trade_current
+			WHERE trade_type = 'SELL'
+			ORDER BY trade_date ASC; -- process oldest SELL trade_date first
+
+
+    -- With a CONTINUE handler, execution continues with the statement following
+    -- the one that caused the error to occur.
+		-- declare NOT FOUND handler - for loop get_Sell
+	  DECLARE CONTINUE HANDLER FOR NOT FOUND SET sell_no_more_rows := TRUE;
+
+
+    -- Other variables - added for transaction ...
+    -- When an EXIT handler fires, the currently executing block is terminated.
+    -- If this block is the main block for the stored program, the procedure
+    -- terminates, and control is returned to the procedure or external program
+    -- that invoked the procedure.
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING -- note: NOT FOUND already defined.
+		ROLLBACK; -- rollback transaction
+		GET DIAGNOSTICS CONDITION 1 @`errno` = MYSQL_ERRNO, @`sqlstate` = RETURNED_SQLSTATE,
+                                           @`text` = MESSAGE_TEXT;
+		SET @full_error = CONCAT('ERROR ', @`errno`, ' (', @`sqlstate`, '): ', @`text`);
+    SET out_event_no := track_no;
+    SET out_message := @full_error;
+
+    START TRANSACTION; -- Start Transaction
+
+    -- Checks
+    SET FOREIGN_KEY_CHECKS = 0;
+    SET track_no = 1;
+
+  	OPEN curSell;
+  	getSell: LOOP
+		FETCH curSell INTO v_sell_trade_id, v_sell_trade_type, v_sell_org_unit_id,
+                       v_sell_org_unit_name, v_sell_user_id, v_sell_username,
+                       v_sell_asset_id, v_sell_asset_name, v_sell_quantity,
+                       v_sell_price, v_sell_trade_date;
+    -- Check if there are any Sell records left to process
+		IF sell_no_more_rows THEN
+			CLOSE curSell;
+			LEAVE getSell;
+		END IF;
+    -- processing would have to be from here on...
+
+    BLOCK2: BEGIN
+      DECLARE buy_no_more_rows BOOLEAN DEFAULT FALSE;
+			DECLARE v_buy_trade_id INTEGER DEFAULT 0;
+			DECLARE v_buy_trade_type NVARCHAR(4);
+			DECLARE v_buy_org_unit_id INTEGER DEFAULT 0;
+			DECLARE v_buy_org_unit_name NVARCHAR(35);
+			DECLARE v_buy_user_id INTEGER DEFAULT 0;
+			DECLARE v_buy_username NVARCHAR(35);
+			DECLARE v_buy_asset_id INTEGER DEFAULT 0;
+			DECLARE v_buy_asset_name NVARCHAR(35);
+			DECLARE v_buy_quantity INTEGER DEFAULT 0;
+			DECLARE v_buy_price INTEGER DEFAULT 0;
+      DECLARE v_buy_trade_date TIMESTAMP;
+      DECLARE v_asset_type_count INTEGER DEFAULT 0;
+      DECLARE v_break_out_of_loop BOOLEAN DEFAULT FALSE;
+      DECLARE v_percentage DOUBLE DEFAULT 0.15;
+
+			-- declare cursor for BUY offers
+			DECLARE curBuy
+				CURSOR FOR
+					SELECT trade_id, trade_type, org_unit_id, org_unit_name, user_id,
+                 username, asset_id, asset_name, quantity, price, trade_date
+          FROM trade_current
+					WHERE trade_type = 'BUY' AND asset_id = v_sell_asset_id -- restrict on asset_id
+					ORDER BY price DESC; -- best (highest) price first - advantage to seller
+
+			-- declare NOT FOUND handler - for loop get_Buy
+			DECLARE CONTINUE HANDLER FOR NOT FOUND SET buy_no_more_rows := TRUE;
+			-- try to make the sale
+			OPEN curBuy;
+			getBuy: LOOP
+				FETCH curBuy INTO v_buy_trade_id, v_buy_trade_type, v_buy_org_unit_id,
+                          v_buy_org_unit_name, v_buy_user_id, v_buy_username,
+                          v_buy_asset_id, v_buy_asset_name, v_buy_quantity,
+                          v_buy_price, v_buy_trade_date;
+        -- Check if there are any Buy records left to process
+				IF buy_no_more_rows OR v_break_out_of_loop THEN
+					CLOSE curBuy;
+					LEAVE getBuy;
+				END IF;
+
+        -- check if buy price is with a with-in a sell range, say (sell price - 15%) if
+        -- it is then a sale is possible.
+        SET v_percentage := v_leeway_percentage / 100;
+				IF v_buy_price = v_sell_price OR (v_buy_price >=
+                              ROUND((v_sell_price - (v_sell_price * v_percentage)), 0)) THEN
+
+          -- Check if the buyer has this asset_type
+          SELECT COUNT(*) INTO v_asset_type_count
+          FROM asset_holding
+          WHERE org_unit_id = v_buy_org_unit_id AND
+                asset_id = v_buy_asset_id;
+
+          IF v_asset_type_count <= 0 THEN
+            SET track_no = 2;
+            SET out_message := 'Buyer does not have this asset';
+          END IF;
+
+					-- make a sale
+          IF v_sell_quantity = v_buy_quantity THEN
+            -- make to make a full sale.
+            -- insert BUY into trade_history and delete BUY from trade_current.
+            -- insert SELL into trade_history and delete SELL from trade_current.
+						-- adjust holding asset quantities, increase buyers and decrease sellers.
+            -- adjust credits, increase the sellers and decrease the buyers.
+            -- break out of getBuy loop - move to next SELL offer.
+
+            -- Insert into trade_history table
+            INSERT INTO trade_history (trade_id_sell, trade_id_buy, trade_type, org_unit_name,
+            			username, asset_name, quantity, price, trade_date, date_processed)
+            			VALUES (v_sell_trade_id, v_buy_trade_id, 'BUY', v_buy_org_unit_name,
+                  v_buy_username,	v_buy_asset_name, v_buy_quantity, v_buy_price,
+                  v_buy_trade_date, NOW());
+            INSERT INTO trade_history (trade_id_sell, trade_id_buy, trade_type, org_unit_name,
+            			username, asset_name, quantity, price, trade_date, date_processed)
+            			VALUES (V_sell_trade_id, v_sell_trade_id, 'SELL', v_sell_org_unit_name,
+                  v_sell_username, v_sell_asset_name, v_sell_quantity, v_sell_price,
+                  v_sell_trade_date, NOW());
+
+            -- Update the asset quantities in asset_holding for seller and buyer
+            IF v_asset_type_count > 0 THEN
+            UPDATE asset_holding
+            SET quantity = (quantity + v_buy_quantity)
+            WHERE org_unit_id = v_buy_org_unit_id AND
+                  asset_id = v_buy_asset_id;
+            ELSE
+            INSERT INTO asset_holding (org_unit_id, asset_id, quantity)
+              VALUES (v_buy_org_unit_id, v_buy_asset_id, v_buy_quantity);
+            END IF;
+            UPDATE asset_holding
+            SET quantity = (quantity - v_buy_quantity)
+            WHERE org_unit_id = v_sell_org_unit_id AND
+                  asset_id = v_sell_asset_id;
+
+            -- Update credits in org_unit for seller and buyer
+            UPDATE org_unit
+            SET credits = (credits + (v_buy_price * v_buy_quantity))
+            WHERE org_unit_id = v_sell_org_unit_id;
+            UPDATE org_unit
+            SET credits = (credits - (v_buy_price * v_buy_quantity))
+            WHERE org_unit_id = v_buy_org_unit_id;
+
+            -- Delete Buyers request from trade_current
+            DELETE FROM trade_current WHERE trade_id = v_buy_trade_id;
+            DELETE FROM trade_current WHERE trade_id = v_sell_trade_id;
+
+            SET v_break_out_of_loop := TRUE; -- break out of loop 'getBuy'
+
+          ELSEIF v_sell_quantity > v_buy_quantity THEN
+						-- able to make a partial sale, fulfil the BUY offer.
+            -- insert BUY into trade_history and delete BUY from trade_current.
+            -- insert details of partial SELL into trade_history.
+            -- adjust SELL offer quantity and don't change the trade_date. ?
+            -- ### ? process oldest SELL offer first, so best to leave the date ###
+						-- adjust holding asset quantities, increase buyers and decrease sellers.
+            -- adjust credits, increase the sellers and decrease the buyers.
+            -- adjust SELL offer's local loop variables i.e. reduce asset quantity
+            -- ready for next BUY offer.
+            -- continue on to next BUY offer, if there is one
+
+            -- Update database SELL offer to reflect the partial SELL
+            UPDATE trade_current -- price stays the same
+            SET quantity = (v_sell_quantity - v_buy_quantity),
+                trade_date = v_sell_trade_date -- process oldest SELL first!
+            WHERE trade_id = v_sell_trade_id;
+
+            -- Insert into trade_history table
+            INSERT INTO trade_history (trade_id_sell, trade_id_buy, trade_type, org_unit_name,
+            			username, asset_name, quantity, price, trade_date, date_processed)
+            			VALUES (v_sell_trade_id, v_buy_trade_id, 'BUY', v_buy_org_unit_name,
+                  v_buy_username, v_buy_asset_name, v_buy_quantity, v_buy_price,
+                  v_buy_trade_date, NOW());
+            INSERT INTO trade_history (trade_id_sell, trade_id_buy, trade_type, org_unit_name,
+            			username, asset_name, quantity, price, trade_date, date_processed)
+            			VALUES (v_sell_trade_id, v_buy_trade_id, 'SELL', v_sell_org_unit_name,
+                  v_sell_username, v_sell_asset_name, v_sell_quantity, v_sell_price,
+                  v_sell_trade_date, NOW());
+
+            -- Update the asset quantities in asset_holding for seller and buyer
+            IF v_asset_type_count > 0 THEN
+              UPDATE asset_holding
+              SET quantity = (quantity + v_buy_quantity)
+              WHERE org_unit_id = v_buy_org_unit_id AND
+                    asset_id = v_buy_asset_id;
+            ELSE
+            INSERT INTO asset_holding (org_unit_id, asset_id, quantity)
+              VALUES (v_buy_org_unit_id, v_buy_asset_id, v_buy_quantity);
+            END IF;
+            UPDATE asset_holding
+              SET quantity = (quantity - v_buy_quantity)
+              WHERE org_unit_id = v_sell_org_unit_id AND
+                    asset_id = v_sell_asset_id;
+
+            -- Update credits in org_unit for seller and buyer
+            UPDATE org_unit
+              SET credits = (credits + (v_buy_price * v_buy_quantity))
+              WHERE org_unit_id = v_sell_org_unit_id;
+            UPDATE org_unit
+              SET credits = (credits - (v_buy_price * v_buy_quantity))
+              WHERE org_unit_id = v_buy_org_unit_id;
+
+            -- Delete Buyers request from Trade table
+            DELETE FROM trade_current WHERE trade_id = v_buy_trade_id;
+
+            -- Adjust SELL variables, ready for next buy offer to be processed
+            SET v_sell_quantity = (v_sell_quantity - v_buy_quantity);
+            SET v_break_out_of_loop := FALSE; -- stay to process next Buy offer
+
+          ELSE -- ( v_sell_quantity < v_buy_quantity )
+          	-- able to make a partial sale, fulfil the SELL offer.
+            -- insert SELL into trade_history and delete SELL from trade_current.
+            -- insert details of partial BUY into trade_history.
+            -- adjust BUY offer quantity and change the trade_date to current datetime ?
+            -- ### ? best (highest) price first - advantage to seller ###
+						-- adjust holding asset quantities, increase buyers ans decrease sellers.
+            -- adjust credits, increase the sellers and decrease the buyers.
+            -- break out of getBuy loop - move to next SELL offer.
+
+            -- Update database BUY offer to reflect the partial sale
+            UPDATE trade_current
+            SET quantity = (v_buy_quantity - v_sell_quantity), trade_date = NOW()
+            WHERE trade_id = v_buy_trade_id;
+
+            -- Insert into trade_history table
+            INSERT INTO trade_history (trade_id_sell, trade_id_buy, trade_type, org_unit_name,
+            			username, asset_name, quantity, price, trade_date, date_processed)
+            			VALUES (v_sell_trade_id, v_buy_trade_id, 'BUY', v_buy_org_unit_name,
+                  v_buy_username,	v_buy_asset_name, (v_buy_quantity - v_sell_quantity),
+                  v_buy_price, v_buy_trade_date, NOW());
+            INSERT INTO trade_history (trade_id_sell, trade_id_buy, trade_type, org_unit_name,
+            			username, asset_name, quantity, price, trade_date, date_processed)
+            			VALUES (v_sell_trade_id, v_buy_trade_id, 'SELL', v_sell_org_unit_name,
+                  v_sell_username, v_sell_asset_name, v_sell_quantity, v_sell_price,
+                  v_sell_trade_date, NOW());
+
+            -- Update the quantities for seller and buyer
+            IF v_asset_type_count > 0 THEN
+              UPDATE asset_holding
+              SET quantity = (quantity + v_buy_quantity)
+              WHERE org_unit_id = v_buy_org_unit_id AND
+                    asset_id = v_buy_asset_id;
+            ELSE
+              INSERT INTO asset_holding (org_unit_id, asset_id, quantity)
+              			VALUES (v_buy_org_unit_id, v_buy_asset_idy, v_buy_quantity);
+              END IF;
+            UPDATE asset_holding
+            SET quantity = (quantity - v_buy_quantity)
+            WHERE org_unit_id = v_sell_org_unit_id AND
+                  asset_id = v_sell_asset_id;
+
+            -- Update credits for seller and buyer
+            UPDATE org_unit
+            SET credits = (credits + (v_buy_price * v_buy_quantity))
+            WHERE org_unit_id = v_sell_org_unit_id;
+            UPDATE org_unit
+            SET credits = (credits - (v_buy_price * v_buy_quantity))
+            WHERE org_unit_id = v_buy_org_unit_id;
+
+            -- Delete Sellers request from Trade table
+            DELETE FROM trade_current WHERE trade_id = v_sell_trade_id;
+
+            SET v_break_out_of_loop := TRUE; -- break out of loop 'getBuy'
+
+          END IF;
+				END IF;
+			END LOOP getBuy;
+		END BLOCK2;
+	END LOOP getSell;
+
+  -- Check if '
+  SET track_no = 3;
+  SET FOREIGN_KEY_CHECKS = 1;
+  SET track_no = 4;
+  SELECT track_no, 'Procedure successfully executed.';
+
+  SET out_event_no := track_no;
+  SET out_message := 'Ok';
+
+  COMMIT; -- Commit transaction
+END BLOCK1
