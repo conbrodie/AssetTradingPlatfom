@@ -1,15 +1,15 @@
-package client;
+package AssetTrading.client;
 
-import client.gui.forms.*;
+import AssetTrading.client.forms.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import common.Utilities;
-import common.security.Security;
-import common.Constants;
-import common.models.*;
-import common.models.TradeCurrentModel;
-import common.transport.*;
-import server.Server;
+import AssetTrading.common.Utilities;
+import AssetTrading.common.security.Security;
+import AssetTrading.common.Constants;
+import AssetTrading.common.models.*;
+import AssetTrading.common.models.TradeCurrentModel;
+import AssetTrading.common.transport.*;
+import AssetTrading.server.Server;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
