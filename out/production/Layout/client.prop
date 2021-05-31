@@ -1,7 +1,0 @@
--- values (for delay and period) are in milli-seconds
--- 1,000 mill-seconds equals 1 second
--- values for useScheduler either true or false
-
-useScheduler=true
-delay=10000
-period=15000
