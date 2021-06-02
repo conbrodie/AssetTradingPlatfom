@@ -76,3 +76,4 @@ server.log
 server.log.lck
 artifacts
 doc
+testFiles
