@@ -1,0 +1,73 @@
+<project name="assignmentcab302" basedir="." >
+    <property name="base" value="artifacts" />
+    <property name="testBase" value="testFiles" />
+
+    <property name="junitJar" value="lib/junit-jupiter-api-5.4.2.jar" />
+    <property name="junitPlatformJar" value="lib/junit-platform-commons-1.4.2.jar" />
+    <property name="opentestJar" value="lib/opentest4j-1.1.1.jar" />
+    <property name="apiguardianJar" value="lib/apiguardian-api-1.0.0.jar" />
+    <property name="jackson-annotations" value="lib/jackson-annotations-2.12.2.jar" />
+    <property name="jackson-core" value="lib/jackson-core-2.12.2.jar" />
+    <property name="jackson-databind" value="lib/jackson-databind-2.12.2.jar" />
+    <property name="jfreechart" value="lib/jfreechart-1.5.3.jar" />
+    <property name="mysql-connector-java" value="lib/mysql-connector-java-5.1.48.jar" />
+    <property name="junitpath" value="${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}" />
+
+    <target description="Create target directories" name="prepare">
+        <mkdir dir="${base}"/>
+        <mkdir dir="${testBase}"/>
+    </target>
+
+    <target name="compile" depends="prepare"
+            description="Compile source">
+        <javac srcdir="src" classpath="${base}:${jackson-annotations}:${jackson-core}:${jackson-databind}:${jfreechart}:${mysql-connector-java}" destdir="${base}"
+               includeantruntime="false">
+            <include name="client/**/*.java"/>
+            <include name="common/**/*.java"/>
+            <include name="server/**/*.java"/>
+        </javac>
+    </target>
+
+    <target name="compileTests" depends="compile"
+            description="Compile unit test source">
+        <!-- Compile unit test source -->
+        <javac srcdir="utest" classpath="${base}:${jackson-annotations}:${jackson-core}:${jackson-databind}:${jfreechart}:${mysql-connector-java}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}"
+               destdir="${testBase}" includeantruntime="false">
+            <include name="client/*.java" />
+        </javac>
+    </target>
+
+    <target name="utest" depends="compileTests" description="Run JUnit">
+        <junitlauncher printSummary="true" failureProperty="junit.failure">
+            <classpath>
+                <pathelement path="${testBase}:${base}" />
+                <pathelement path="${jackson-annotations}:${jackson-core}:${jackson-databind}:${jfreechart}:${mysql-connector-java}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}" />
+            </classpath>
+            <testclasses outputDir="${testBase}">
+                <fileset dir="${testBase}"/>
+                <listener type="legacy-xml"/>
+            </testclasses>
+        </junitlauncher>
+        <fail if="junit.failure" message="junit tests failed - aborting"/>
+    </target>
+
+    <target name="doc" >
+        <javadoc
+                 classpath="${jackson-annotations}:${jackson-core}:${jackson-databind}:${jfreechart}:${mysql-connector-java}"
+                 sourcepath="src"
+                 destdir="doc"
+                 author="true"
+                 version="true"
+                 use="true"
+                 windowtitle="Electronic Asset Trading Platform">
+            <doctitle><![CDATA[<h1>Electronic Asset Trading Platform</h1>]]></doctitle>
+        </javadoc>
+    </target>
+
+    <target name="clean">
+        <delete dir="doc"/>
+        <delete dir="${base}"/>
+        <delete dir="${testBase}"/>
+    </target>
+
+</project>
