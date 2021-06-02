@@ -6,153 +6,111 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import client.gui.Gbc;
+
+import static client.gui.Gbc.addToPanel;
+
 public class ManageOrganisation extends JDialog {
+    private boolean create;
     private DialogResult dlgResult = null; // used to pass form data back
 
-    private JLabel organisationLabel;
-    private JLabel creditLabel;
-    private JTextField organisationTextField;
-    private JComboBox<String> orgUnitComboBox;
-    private JTextField creditTextField;
-    private JButton actionButton;
-    private JButton cancelButton;
-    private String buttonName;
+    private JLabel lblOrganisation;
+    private JLabel lblCredit;
+    private JTextField txtOrganisation;
+    private JComboBox<String> cboOrganisation;
+    private JTextField txtCredit;
+    private JButton btnUpdate;
+    private JButton btnCancel;
     private ArrayList<OrgUnitModel> orgUnits;
 
     public ManageOrganisation(JFrame parent, String title, String buttonName,
                               boolean modal, ArrayList<OrgUnitModel> orgUnits) {
         super(parent, title, modal);
 
-
-        this.buttonName = buttonName;
         this.orgUnits = orgUnits;
+        // TODO: pass value in better
+        this.create = buttonName.equals("Create");
 
-        this.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        // initialise components
+        lblOrganisation = new JLabel("Organisation");
+        txtOrganisation = new JTextField(15);
+        cboOrganisation = new JComboBox<String>();
+        lblCredit = new JLabel("Credits");
+        txtCredit = new JTextField(4);
+        btnCancel = new JButton("Cancel");
+        btnUpdate = new JButton(buttonName);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.insets = new Insets(20,15,2,0);
-        gbc.anchor = GridBagConstraints.WEST;
-        organisationLabel = new JLabel("Organisation");
-        add(organisationLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(20,15,2,15);
-        gbc.anchor = GridBagConstraints.WEST;
-        if (buttonName.equals("Create")) {
-            organisationTextField = new JTextField(15);
-            add(organisationTextField, gbc);
-        }
-        else {
-            orgUnitComboBox = new JComboBox<String>();
+        // load values
+        if (!create) {
             loadComboBoxItems("org");
-            orgUnitComboBox.setPreferredSize(new Dimension(205, 20));
-            orgUnitComboBox.addActionListener(new ActionListener() {
+        }
+        readyComponents();
+
+        // add action listeners
+        if (!create) {
+            cboOrganisation.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String item = (String) orgUnitComboBox.getSelectedItem();
+                    String item = (String) cboOrganisation.getSelectedItem();
                     // Update the Credit value for the OrgUnit
-                    creditTextField.setText(findCreditValue(item));
+                    txtCredit.setText(findCreditValue(item));
                     System.out.println(item);
                 }
             });
-            add(orgUnitComboBox, gbc);
         }
+        txtCredit.addActionListener((e) -> btnUpdate.doClick());
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1;
-        gbc.gridwidth = 1;
-        gbc.insets = new Insets(3,15,2,0);
-        gbc.anchor = GridBagConstraints.WEST;
-        creditLabel = new JLabel("Credits");
-        add(creditLabel, gbc);
+        btnUpdate.addActionListener((e) -> {
+            // Get information - pass back to parent via 'run' method
+            if (validateDialogResult()) {
+                if (!create) {
+                    dlgResult = new DialogResult(cboOrganisation.getSelectedItem().toString(),
+                            getOrgUnitId(cboOrganisation.getSelectedItem().toString()),
+                            Integer.valueOf(txtCredit.getText()),
+                            e.getActionCommand());
+                }
+                else {
+                    dlgResult = new DialogResult(txtOrganisation.getText(), 0,
+                            Integer.valueOf(txtCredit.getText()),
+                            e.getActionCommand());
+                }
+                dispose(); // dispose of Dialog form
+            } else {
+                JOptionPane.showMessageDialog(parent,
+                        "There were some errors, check you inputs!",
+                        "Validation Message", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weightx = 1;
-        gbc.insets = new Insets(3,15,2,20);
-        gbc.anchor = GridBagConstraints.WEST;
-        creditTextField = new JTextField(4);
-        add(creditTextField, gbc);
+        btnCancel.addActionListener((e) -> {
+            if (dlgResult != null) {
+                dlgResult.setButtonName("Cancel");
+            }
 
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.insets = new Insets(15,15,15,15);
-        gbc.anchor = GridBagConstraints.WEST;
-        actionButton = new JButton(buttonName);
-        actionButton.setPreferredSize(new Dimension(75, 26));
-        add(actionButton, gbc);
+            dispose(); // dispose of Dialog form
+        });
 
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.EAST;
-        cancelButton = new JButton("Cancel");
-        cancelButton.setPreferredSize(new Dimension(75, 26));
-        add(cancelButton, gbc);
+        // layout components
+        JPanel pnlTop = new JPanel(new GridBagLayout());
+        Gbc leftGbc = Gbc.nu().pad(5).lineStart();
+        addToPanel(pnlTop, lblOrganisation, leftGbc.xy(0,0,1,1));
+        addToPanel(pnlTop, create? txtOrganisation : cboOrganisation, leftGbc.xy(1, 0, 1,1 ).weightX(1));
+        addToPanel(pnlTop, lblCredit, leftGbc.xy(0, 1, 1, 1));
+        addToPanel(pnlTop, txtCredit, leftGbc.xy(1, 1, 1, 1).weightX(1));
 
-        readyComponents();
+        JPanel pnlBottom = new JPanel(new GridBagLayout());
+        addToPanel(pnlBottom, btnUpdate, Gbc.nu(0, 0, 1, 1).pad(5).east().weightX(1));
+        addToPanel(pnlBottom, btnCancel, Gbc.nu(1, 0, 1, 1).pad(5).west().weightX(1));
+
+        setLayout(new BorderLayout());
+        add(pnlTop, BorderLayout.CENTER);
+        add(pnlBottom, BorderLayout.SOUTH);
 
         pack();
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-
-        creditTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent arg0) {
-                // Will detect user hitting ENTER after filling in password
-                if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-                    actionButton.doClick(); // simulate clicking 'Send' button
-                }
-            }
-        });
-
-        actionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Get information - pass back to parent via 'run' method
-                Boolean valid = ValidateDialogResult();
-                if (valid) {
-                    if (! buttonName.equals("Create")) {
-                        dlgResult = new DialogResult(orgUnitComboBox.getSelectedItem().toString(),
-                                getOrgUnitId(orgUnitComboBox.getSelectedItem().toString()),
-                                Integer.valueOf(creditTextField.getText()),
-                                e.getActionCommand());
-                    }
-                    else {
-                        dlgResult = new DialogResult(organisationTextField.getText(), 0,
-                                Integer.valueOf(creditTextField.getText()),
-                                e.getActionCommand());
-                    }
-                    dispose(); // dispose of Dialog form
-                } else {
-                    JOptionPane.showMessageDialog(parent,
-                            "There were some errors, check you inputs!",
-                            "Validation Message", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dlgResult != null) {
-                    dlgResult.setButtonName("Cancel");
-                }
-
-                dispose(); // dispose of Dialog form
-            }
-        });
 
     }
 
@@ -215,56 +173,24 @@ public class ManageOrganisation extends JDialog {
         }
     }
 
-    private Boolean  ValidateDialogResult() {
-        /**
-         * @action Used to validate user's entries
-         * @param none
-         * @special private method
-         * @return boolean - success or failure
-         */
-
-        Boolean valid = false;
-        try {
-            if (buttonName.equals("Create")) {
-                if ((String.valueOf(organisationTextField.getText()) != null
-                        && String.valueOf(organisationTextField.getText()).length() > 0)
-                        && (String.valueOf(creditTextField.getText()) != null
-                        && String.valueOf(creditTextField.getText()).length() > 0)
-                        && Integer.valueOf(creditTextField.getText()) >= 0) {
-                    valid = true;
-                } else {
-                    valid = false;
-                }
-            }
-            else {
-                if ((String.valueOf(creditTextField.getText()) != null
-                        && String.valueOf(creditTextField.getText()).length() > 0)
-                        && Integer.valueOf(creditTextField.getText()) >= 0) {
-                    valid = true;
-                } else {
-                    valid = false;
-                }
-            }
+    private boolean validateDialogResult() {
+        if (create && txtOrganisation.getText().isBlank()) {
+            return false;
         }
-        catch (Exception e) {
-            valid = false;
+        if (!txtCredit.getText().matches("^\\d+$")) {
+            return false;
         }
-        return valid;
+        return true;
     }
 
     private void readyComponents() {
-        if(! buttonName.equals("Create")) {
-            creditTextField.setText(String.valueOf(orgUnits.get(0).getCredits()));
-        }
-        else {
-            creditTextField.setText("0");
-        }
+        txtCredit.setText(create ? "0" : "" + orgUnits.get(0).getCredits());
     }
 
     private void loadComboBoxItems(String nameOfComboBox) {
         if (nameOfComboBox.equals("org")) {
             for (OrgUnitModel oum : orgUnits ) {
-                orgUnitComboBox.addItem(oum.getOrg_unit_name());
+                cboOrganisation.addItem(oum.getOrg_unit_name());
             }
         }
     }

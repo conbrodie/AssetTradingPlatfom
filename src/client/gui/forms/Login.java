@@ -1,60 +1,49 @@
 package client.gui.forms;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+
+import client.gui.Gbc;
+
+import static client.gui.Gbc.addToPanel;
+
 public class Login extends JDialog {
 
     private DialogResult dlgResult = null; // used to pass form data back
 
-    private JLabel usernameLabel;
-    private JLabel passwordLabel;
-    private JTextField usernameTextfield;
-    private JPasswordField passwordPwdField;
-    private JButton okButton;
-    private JButton cancelButton;
-    private JLabel statusTextfield;
+    private JLabel lblUsername;
+    private JLabel lblPassword;
+    private JTextField txtUsername;
+    private JPasswordField pwdPassword;
+    private JButton btnLogin;
+    private JButton btnCancel;
+    private JLabel lblStatus;
 
     public Login(final JFrame parent, String title, String btnText, boolean modal) {
         super(parent, title, modal);
 
-        JPanel p1a = new JPanel(new GridLayout(2, 1,0,3));
-        p1a.setBorder(new EmptyBorder(5, 10, 0, 0));
-        usernameLabel = new JLabel("Username");
-        p1a.add(usernameLabel);
-        passwordLabel = new JLabel("Password");
-        p1a.add(passwordLabel);
+        // initialise components
+        lblUsername = new JLabel("Username");
+        lblPassword = new JLabel("Password");
+        txtUsername = new JTextField(20);
+        pwdPassword = new JPasswordField(20);
+        btnLogin = new JButton(btnText);
+        btnCancel = new JButton("Cancel");
+        lblStatus = new JLabel(" ");
+        lblStatus.setForeground(Color.RED);
 
-        JPanel p1b = new JPanel(new GridLayout(2, 10,0, 3));
+        // create layout
+        JPanel p1 = new JPanel(new GridBagLayout());
+        addToPanel(p1, lblUsername, Gbc.nu(0,0,1,1).pad(5));
+        addToPanel(p1, txtUsername, Gbc.nu(1, 0, 1, 1).pad(5));
+        addToPanel(p1, lblPassword, Gbc.nu(0,1,1,1).pad(5));
+        addToPanel(p1, pwdPassword, Gbc.nu(1,1,1,1).pad(5));
+        addToPanel(p1, lblStatus, Gbc.nu(0,2,2,1).pad(5));
 
-        p1b.setBorder(new EmptyBorder(4, 10, 0, 0));
-        usernameTextfield = new JTextField(15);
-        usernameTextfield.setText("stock.c"); // TODO: debug code
-        p1b.add(usernameTextfield);
-        passwordPwdField = new JPasswordField();
-        passwordPwdField.setText("pwd"); // TODO: debug code
-        p1b.add(passwordPwdField);
-
-        JPanel p1 = new JPanel();
-        p1.setBorder(new EmptyBorder(8, 10, 0, 10));
-        p1.add(p1a);
-        p1.add(p1b);
-
-        JPanel p2a = new JPanel();
-        p2a.setBorder(new EmptyBorder(0, 0, 8, 0));
-        okButton = new JButton("btnText");
-        okButton.setText(btnText);
-        p2a.add(okButton);
-        cancelButton = new JButton("Cancel");
-        p2a.add(cancelButton);
-
-        JPanel p2 = new JPanel(new BorderLayout());
-        p2.add(p2a, BorderLayout.CENTER);
-        statusTextfield = new JLabel(" ");
-        p2.add(statusTextfield, BorderLayout.NORTH);
-        statusTextfield.setForeground(Color.RED);
-        statusTextfield.setHorizontalAlignment(SwingConstants.CENTER);
+        JPanel p2 = new JPanel(new GridBagLayout());
+        addToPanel(p2, btnLogin, Gbc.nu(0, 0, 1,1).pad(5).east().weightX(1));
+        addToPanel(p2, btnCancel, Gbc.nu(1,0,1,1).pad(5).west().weightX(1));
 
         setLayout(new BorderLayout());
         add(p1, BorderLayout.CENTER);
@@ -64,38 +53,30 @@ public class Login extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        passwordPwdField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent arg0) {
-                // Will detect user hitting ENTER after filling in Username
-                if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-                    okButton.doClick(); // simulate clicking 'Send' button
-                }
+        // TODO: remove before release
+        txtUsername.setText("stock.c");
+        pwdPassword.setText("pwd");
+
+        pwdPassword.addActionListener((e) -> btnLogin.doClick());
+
+        btnLogin.addActionListener((e) -> {
+            if (validateDialogResult()) {
+                dlgResult = new DialogResult(txtUsername.getText(),
+                        String.valueOf(pwdPassword.getPassword()), e.getActionCommand());
+                dispose(); // dispose of Dialog form
+            } else {
+                JOptionPane.showMessageDialog(parent,
+                        "There were some errors, check you inputs!",
+                        "Validation Message", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        okButton.addActionListener(new ActionListener() {
+        btnCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Get login Information - pass back to parent via 'run' method
-                Boolean valid = ValidateDialogResult();
-                if (valid) {
-                    dlgResult = new DialogResult(usernameTextfield.getText(),
-                            String.valueOf(passwordPwdField.getPassword()), e.getActionCommand());
-                    dispose(); // dispose of Dialog form
+                if (dlgResult != null) {
+                    dlgResult.setButtonName("Cancel");
                 }
-                else {
-                    JOptionPane.showMessageDialog(parent,
-                            "There were some errors, check you inputs!",
-                            "Validation Message", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(dlgResult != null) {dlgResult.setButtonName("Cancel");}
 
                 dispose(); // dispose of Dialog form
             }
@@ -152,31 +133,16 @@ public class Login extends JDialog {
         }
     }
 
-    private Boolean  ValidateDialogResult() {
-        /**
-         * @action Used to validate user's entries
-         * @param none
-         * @special private method
-         * @return boolean - success or failure
-         */
-
-        Boolean valid = false;
-        try {
-            if ((usernameTextfield.getText() != null
-                    && usernameTextfield.getText().length() > 0)
-                    && (String.valueOf(passwordPwdField.getPassword()) != null
-                    && String.valueOf(passwordPwdField.getPassword()).length() > 0)) {
-
-                valid = true;
-            }
-            else {
-                valid = false;
-                valid = false;
-            }
+    private boolean validateDialogResult() {
+        if (txtUsername.getText().isBlank()) {
+            lblStatus.setText("Please enter a username");
+            return false;
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        if (pwdPassword.getPassword().length == 0) {
+            lblStatus.setText("Please enter a password");
+            return false;
         }
-        return valid;
+        lblStatus.setText(" ");
+        return true;
     }
 }

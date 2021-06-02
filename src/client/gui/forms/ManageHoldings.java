@@ -1,27 +1,29 @@
 package client.gui.forms;
 
-import client.MainFrame;
 import common.models.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+
+import client.gui.Gbc;
+
+import static client.gui.Gbc.addToPanel;
+
 
 public class ManageHoldings extends JDialog implements ActionListener {
     private DialogResult dlgResult = null; // used to pass form data back
 
-    private JLabel organisationLabel;
-    private JLabel assetLabel;
-    private JLabel quantityLabel;
-    private JComboBox<String> orgUnitComboBox;
-    private JComboBox<String> assetComboBox;
-    private JTextField quantityTextField;
-    private JButton actionButton;
-    private JButton cancelButton;
+    private JLabel lblOrganisation;
+    private JLabel lblAsset;
+    private JLabel lblQuantity;
+    private JComboBox<String> cboOrganisation;
+    private JComboBox<String> cboAsset;
+    private JTextField txtQuantity;
+    private JButton btnUpdate;
+    private JButton btnCancel;
     private String buttonName;
     private ArrayList<OrgUnitModel> orgUnits;
     private ArrayList<AssetModel> assets;
@@ -30,172 +32,97 @@ public class ManageHoldings extends JDialog implements ActionListener {
     private boolean isCreate = false;
 
     public ManageHoldings(JFrame parent, String title, String buttonText, boolean modal,
-                                                  ArrayList<OrgUnitModel> orgUnits, ArrayList<AssetModel> assets,
-                                                  ArrayList<AssetHoldingModel> holdings) {
+                          ArrayList<OrgUnitModel> orgUnits, ArrayList<AssetModel> assets,
+                          ArrayList<AssetHoldingModel> holdings) {
         super(parent, title, modal);
         this.orgUnits = orgUnits;
         this.assets = assets;
         this.holdings = holdings;
         this.buttonName = buttonText;
 
-        this.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        // initialise components
+        lblOrganisation = new JLabel("Organisation");
+        cboOrganisation = new JComboBox<String>();
+        cboOrganisation.setPreferredSize(new Dimension(210, 20));
+        lblAsset = new JLabel("Asset");
+        cboAsset = new JComboBox<String>();
+        cboAsset.setPreferredSize(new Dimension(210, 20));
+        lblQuantity = new JLabel("Quantity");
+        txtQuantity = new JTextField(6);
+        btnUpdate = new JButton(buttonName);
+        btnCancel = new JButton("Cancel");
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        organisationLabel = new JLabel("Organisation");
-        gbc.insets = new Insets(20, 15, 2, 0);
-        gbc.anchor = GridBagConstraints.WEST;
-        add(organisationLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        orgUnitComboBox = new JComboBox<String>();
-        orgUnitComboBox.setPreferredSize(new Dimension(210, 20));
+        // load values
         loadComboBoxItems("org");
-        orgUnitComboBox.addActionListener(this);
-        // TODO: Check if required - see line 301
-//        orgUnitComboBox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                quantityTextField.setText("0");
-//            }
-//        });
-        gbc.insets = new Insets(20, 15, 2, 15);
-        gbc.anchor = GridBagConstraints.WEST;
-        add(orgUnitComboBox, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1;
-        assetLabel = new JLabel("Asset");
-        gbc.insets = new Insets(2, 15, 2, 0);
-        gbc.anchor = GridBagConstraints.WEST;
-        add(assetLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weightx = 1;
-        assetComboBox = new JComboBox<String>();
-        assetComboBox.setPreferredSize(new Dimension(210, 20));
         loadComboBoxItems("asset");
-        assetComboBox.addActionListener(this);
-        //TODO: Check if this is still required - action shifted to a Dialog wide Listener - see line 301
-//        assetComboBox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                if (isAlreadyHolingAsset(orgUnitComboBox.getSelectedItem().toString(), assetComboBox.getSelectedItem().toString())) {
-//                    // Warn user asset already already owned by orgUnit
-//                    quantityTextField.setText(String.valueOf(findQuantity(orgUnitComboBox.getSelectedItem().toString(), assetComboBox.getSelectedItem().toString()))) ;
-//                    System.out.println("Has this holding!");
-//                }
-//                else {
-//                    quantityTextField.setText("0");
-//                }
-//            }
-//        });
+        setQuantity();
 
-        gbc.insets = new Insets(2, 15, 2, 15);
-        gbc.anchor = GridBagConstraints.WEST;
-        add(assetComboBox, gbc);
+        // add listeners
+        cboOrganisation.addActionListener(this);
+        cboAsset.addActionListener(this);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weightx = 1;
-        quantityLabel = new JLabel("Quantity");
-        gbc.insets = new Insets(2, 15, 2, 15);
-        gbc.anchor = GridBagConstraints.WEST;
-        add(quantityLabel, gbc);
+        // layout components
+        JPanel pnlTop = new JPanel(new GridBagLayout());
+        Gbc leftGbc = Gbc.nu().pad(5).lineStart();
+        addToPanel(pnlTop, lblOrganisation, leftGbc.xy(0,0, 1,1));
+        addToPanel(pnlTop, cboOrganisation, leftGbc.xy(1, 0, 1, 1).weightX(1));
+        addToPanel(pnlTop, lblAsset, leftGbc.xy(0, 1, 1, 1));
+        addToPanel(pnlTop, cboAsset, leftGbc.xy(1, 1, 1, 1).weightX(1));
+        addToPanel(pnlTop, lblQuantity, leftGbc.xy(0, 2, 1, 1));
+        addToPanel(pnlTop, txtQuantity, leftGbc.xy(1, 2, 1,1).weightX(1));
+        JPanel pnlBottom = new JPanel(new GridBagLayout());
+        addToPanel(pnlBottom, btnUpdate, Gbc.nu(0, 0, 1, 1).pad(5).east().weightX(1));
+        addToPanel(pnlBottom, btnCancel, Gbc.nu(1, 0, 1, 1).pad(5).west().weightX(1));
+        setLayout(new BorderLayout());
+        add(pnlTop, BorderLayout.CENTER);
+        add(pnlBottom, BorderLayout.SOUTH);
 
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.weightx = 1;
-        quantityTextField = new JTextField(6);
-        gbc.insets = new Insets(2, 15, 2, 0);
-        gbc.anchor = GridBagConstraints.WEST;
-        add(quantityTextField, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        gbc.gridwidth = 1;
-        gbc.insets = new Insets(15, 15, 15, 0);
-        gbc.anchor = GridBagConstraints.WEST;
-        actionButton = new JButton(buttonName);
-        actionButton.setPreferredSize(new Dimension(75, 26));
-        add(actionButton, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        gbc.insets = new Insets(15, 5, 15, 15);
-        gbc.anchor = GridBagConstraints.EAST;
-        cancelButton = new JButton("Cancel");
-        cancelButton.setPreferredSize(new Dimension(75, 26));
-        add(cancelButton, gbc);
-
-        assetComboBox.setSelectedIndex(0);
         pack();
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        quantityTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent arg0) {
-                // Will detect user hitting ENTER after filling in password
-                if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-                    actionButton.doClick(); // simulate clicking 'Send' button
-                }
-            }
-        });
+        txtQuantity.addActionListener((e) -> btnUpdate.doClick());
 
-        actionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Get information - pass back to parent via 'run' method
-                Boolean valid = ValidateDialogResult();
-                if (valid) {
-                    if ( Integer.valueOf(quantityTextField.getText()) == 0 ) {
-                        // Check if user accepts zero quantity of assets for holding
-                        int response = JOptionPane.showConfirmDialog(parent, "Asset quantity is zero (0) - Are you sure?",
-                                "Validation Message", JOptionPane.YES_NO_OPTION);
-                        if (response == JOptionPane.YES_OPTION) {
-                            dlgResult = new DialogResult(getOrgUnitId(orgUnitComboBox.getSelectedItem().toString()),
-                                    orgUnitComboBox.getSelectedItem().toString(),
-                                    getAssetId(assetComboBox.getSelectedItem().toString()),
-                                    assetComboBox.getSelectedItem().toString(),
-                                    Integer.valueOf(quantityTextField.getText()),
-                                    isCreate, e.getActionCommand());
-                            dispose(); // dispose of Dialog form
-                        }
-                    }
-                    else {
-                        dlgResult = new DialogResult(getOrgUnitId(orgUnitComboBox.getSelectedItem().toString()),
-                                orgUnitComboBox.getSelectedItem().toString(),
-                                getAssetId(assetComboBox.getSelectedItem().toString()),
-                                assetComboBox.getSelectedItem().toString(),
-                                Integer.valueOf(quantityTextField.getText()),
+        btnUpdate.addActionListener((e) -> {
+            // Get information - pass back to parent via 'run' method
+            if (validateDialogResult()) {
+                if ( Integer.valueOf(txtQuantity.getText()) == 0 ) {
+                    // Check if user accepts zero quantity of assets for holding
+                    int response = JOptionPane.showConfirmDialog(parent, "Asset quantity is zero (0) - Are you sure?",
+                            "Validation Message", JOptionPane.YES_NO_OPTION);
+                    if (response == JOptionPane.YES_OPTION) {
+                        dlgResult = new DialogResult(getOrgUnitId(cboOrganisation.getSelectedItem().toString()),
+                                cboOrganisation.getSelectedItem().toString(),
+                                getAssetId(cboAsset.getSelectedItem().toString()),
+                                cboAsset.getSelectedItem().toString(),
+                                Integer.valueOf(txtQuantity.getText()),
                                 isCreate, e.getActionCommand());
                         dispose(); // dispose of Dialog form
                     }
                 }
                 else {
-                    JOptionPane.showMessageDialog(parent,
-                            "There were some errors, check you inputs!",
-                            "Validation Message", JOptionPane.ERROR_MESSAGE);
+                    dlgResult = new DialogResult(getOrgUnitId(cboOrganisation.getSelectedItem().toString()),
+                            cboOrganisation.getSelectedItem().toString(),
+                            getAssetId(cboAsset.getSelectedItem().toString()),
+                            cboAsset.getSelectedItem().toString(),
+                            Integer.valueOf(txtQuantity.getText()),
+                            isCreate, e.getActionCommand());
+                    dispose(); // dispose of Dialog form
                 }
+            }
+            else {
+                JOptionPane.showMessageDialog(parent,
+                        "There were some errors, check you inputs!",
+                        "Validation Message", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dlgResult != null) {
-                    dlgResult.setButtonName("Cancel");
-                }
-
-                dispose(); // dispose of Dialog form
+        btnCancel.addActionListener((e) -> {
+            if (dlgResult != null) {
+                dlgResult.setButtonName("Cancel");
             }
+
+            dispose(); // dispose of Dialog form
         });
     }
 
@@ -291,43 +218,31 @@ public class ManageHoldings extends JDialog implements ActionListener {
         }
     }
 
-    private Boolean ValidateDialogResult() {
-        /**
-         * @action Used to validate user's entries
-         * @param none
-         * @special private method
-         * @return boolean - success or failure
-         */
-
-        Boolean valid = false;
-        try {
-            // This is the only variable to be validated...
-            if ((String.valueOf(quantityTextField.getText()) != null
-                    && String.valueOf(quantityTextField.getText()).length() > 0)
-                    && Integer.valueOf(quantityTextField.getText()) >= 0) { // allowed to have zero quantity of asset
-                valid = true;
-            } else {
-                valid = false;
-            }
-        } catch (Exception e) {
-            valid = false;
+    private boolean validateDialogResult() {
+        // check if quantity is not a number
+        if (!txtQuantity.getText().matches("^\\d+$")) {
+            return false;
         }
-        return valid;
+        return true;
     }
 
     public void actionPerformed(ActionEvent e) {
         // This action listener manages both orgUnit and asset comboboxes.
-        if (isAlreadyHolingAsset(orgUnitComboBox.getSelectedItem().toString(), assetComboBox.getSelectedItem().toString())) {
+        setQuantity();
+    }
+
+    private void setQuantity() {
+        if (isAlreadyHolingAsset(cboOrganisation.getSelectedItem().toString(), cboAsset.getSelectedItem().toString())) {
             // If the asset is already allocated to the organisation the user can only update the quantity
-            quantityTextField.setText(String.valueOf(findQuantity(orgUnitComboBox.getSelectedItem().toString(), assetComboBox.getSelectedItem().toString()))) ;
+            txtQuantity.setText(String.valueOf(findQuantity(cboOrganisation.getSelectedItem().toString(), cboAsset.getSelectedItem().toString()))) ;
             isCreate = false;
-            actionButton.setText("Update");
+            btnUpdate.setText("Update");
         }
         else {
             // Organisation does not own the asset so it can be allocated
-            quantityTextField.setText("0");
+            txtQuantity.setText("0");
             isCreate = true;
-            actionButton.setText("Create");
+            btnUpdate.setText("Create");
         }
     }
 
@@ -335,12 +250,12 @@ public class ManageHoldings extends JDialog implements ActionListener {
         // Load combobox items
         if (nameOfComboBox.equals("org")) {
             for (OrgUnitModel oum : orgUnits ) {
-                orgUnitComboBox.addItem(oum.getOrg_unit_name());
+                cboOrganisation.addItem(oum.getOrg_unit_name());
             }
         }
         else if (nameOfComboBox.equals("asset")) {
             for (AssetModel a : assets ) {
-                assetComboBox.addItem(a.getAsset_name());
+                cboAsset.addItem(a.getAsset_name());
             }
         }
     }
