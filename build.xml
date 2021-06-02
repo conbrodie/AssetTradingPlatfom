@@ -1,4 +1,4 @@
-<project name="assignmentcab302" basedir="." >
+<project name="assignmentcab302" basedir="." default="build">
     <property name="base" value="artifacts" />
     <property name="testBase" value="testFiles" />
 
@@ -51,6 +51,19 @@
         <fail if="junit.failure" message="junit tests failed - aborting"/>
     </target>
 
+    <target name="build" depends="utest" >
+        <jar destfile="Cab302Assessment.jar" basedir="${base}">
+            <manifest>
+                <!-- Who is building this jar? -->
+                <attribute name="Built-By" value="${user.name}"/>
+                <!-- Information about the program itself -->
+                <attribute name="Implementation-Vendor" value="QUT"/>
+                <attribute name="Implementation-Title" value="CAB302 Assessment"/>
+                <attribute name="Implementation-Version" value="1.0.0"/>
+            </manifest>
+        </jar>
+    </target>
+
     <target name="doc" >
         <javadoc
                  classpath="${jackson-annotations}:${jackson-core}:${jackson-databind}:${jfreechart}:${mysql-connector-java}"
@@ -68,6 +81,7 @@
         <delete dir="doc"/>
         <delete dir="${base}"/>
         <delete dir="${testBase}"/>
+        <delete file="Cab302Assessment.jar"/>
     </target>
 
 </project>
