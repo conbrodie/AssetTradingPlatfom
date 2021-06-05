@@ -2,17 +2,23 @@ package server;
 
 import client.gui.forms.Login;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysql.jdbc.log.Log;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import common.Utilities;
 import common.models.*;
 import common.transport.*;
 import server.dal.*;
 
-import java.util.logging.Level;
 
 public class ServerLogicCommands {
     private final static ObjectMapper objectMapper = new ObjectMapper();
+
+    static {
+        objectMapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+        objectMapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
+    }
 
     public static String getAccounts(boolean isLoggedIn, AccountTypeDb db) throws JsonProcessingException {
         JSONResultset objResult = new JSONResultset();
