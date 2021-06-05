@@ -25,6 +25,15 @@ public class TradeTableModelTest {
         assertEquals(20, ttm.getValueAt(0, 5));
         assertEquals("2021-06-05 16:04:14", ttm.getValueAt(0, 6));
         assertEquals(1, ttm.getValueAt(0, 7));
+    }
 
+    @Test
+    public void testRemoveTrade() {
+        TradeTableModel ttm = new TradeTableModel(new ArrayList<>());
+        Timestamp time = new Timestamp(1622873054735l);
+        ttm.addTrade(new TradeCurrentModel(1, "BUY", 1, "org", 10, "user", 3, "asset", 5, 20, time));
+        assertEquals(1, ttm.getRowCount());
+        ttm.removeTrade(1);
+        assertEquals(0, ttm.getRowCount());
     }
 }
