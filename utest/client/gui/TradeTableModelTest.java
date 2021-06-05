@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TradeTableModelTest {
     @Test
-    public void testAddtrade(){
+    public void testAddTrade(){
         TradeTableModel ttm = new TradeTableModel(new ArrayList<>());
         Timestamp time = new Timestamp(1622873054735l);
         ttm.addTrade(new TradeCurrentModel(1, "BUY", 1, "org", 10, "user", 3, "asset", 5, 20, time));

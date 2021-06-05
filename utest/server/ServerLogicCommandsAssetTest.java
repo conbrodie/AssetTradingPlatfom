@@ -33,7 +33,7 @@ public class ServerLogicCommandsAssetTest {
      * Test for create assets method
      */
     @Test
-    public void testCreateAsseWhenNotLoggedIn() throws Exception {
+    public void testCreateAssetWhenNotLoggedIn() throws Exception {
         db = new AssetDbMock(new ArrayList<>(), new ArrayList<>());
         JSONAction obj = new JSONAction();
         assertEquals("{\"success\":\"0\",\"message\":null," +
