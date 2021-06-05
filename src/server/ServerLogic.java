@@ -215,30 +215,7 @@ public class ServerLogic {
             }
 
             case Create_Asset: {
-                JSONAcknowledgement objAcknowledgement = new JSONAcknowledgement();
-
-                if (validPassword) {
-                    boolean success = false;
-                    Asset a = new Asset();
-                    parseFromLinkedHashMapToObject(obj);
-                    AssetModel am = (AssetModel) obj.getObject();
-                    if (obj.getSqlStatementType().equals("create")) {
-                        success = a.createAsset(am.getAsset_id(), am.getAsset_name());
-                        if (success) {
-                            objAcknowledgement.setMessage("Asset '" + am.getAsset_name() + "' was created.");
-                        }
-                        else {
-                            objAcknowledgement.setErrorMessage("Asset '" + am.getAsset_name() + "' was not created.");
-                        }
-                    }
-                    objAcknowledgement.setSuccess(success ? "1" : "0");
-                }
-                else { // invalid password
-                    objAcknowledgement.setSuccess("0");
-                    objAcknowledgement.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objAcknowledgement);
-
+                jsonReturn = ServerLogicCommands.createAsset(validPassword, obj, new Asset());
                 break;
             }
 
@@ -389,26 +366,7 @@ public class ServerLogic {
             }
 
             case Get_Assets: {
-                JSONResultset objResult = new JSONResultset();
-
-                if (validPassword) {
-                    Asset a = new Asset();
-                    String jsonAssets = a.getAssets();
-                    if (! Utilities.isNullOrEmpty(jsonAssets)) {
-                        objResult.setSuccess("1");
-                        objResult.setResultSetType("json");
-                        objResult.setResultSet(jsonAssets);
-                        objResult.setMessage("Assets has been retrieved.");
-                    } else {
-                        objResult.setSuccess("0");
-                        objResult.setErrorMessage("Error when trying to retrieve assets.");
-                    }
-                }
-                else { // invalid password
-                    objResult.setSuccess("0");
-                    objResult.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objResult);
+                jsonReturn = ServerLogicCommands.getAssets(validPassword, new Asset());
                 break;
             }
 
