@@ -52,7 +52,7 @@ public class OrgUnit extends Connect {
         Boolean value = true;
         openDB();
         try {
-            String sql = "insert into org_unit values (default, ?, ?)"; // default - use auto-increment id
+            String sql = "insert into org_unit (org_unit_id, org_unit_name, credits) values (default, ?, ?)"; // default - use auto-increment id
             PreparedStatement preparedStatement = this.getDBConnection().prepareStatement(sql);
             preparedStatement.setString(1, org_unit_name);
             preparedStatement.setInt(2, credits);

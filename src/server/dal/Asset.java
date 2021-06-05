@@ -49,7 +49,7 @@ public class Asset extends Connect {
         Boolean value = true;
         openDB();
         try {
-            String sql = "insert into asset values (default, ?)";
+            String sql = "insert into asset (asset_id, asset_name) values (default, ?)";
             PreparedStatement preparedStatement = this.getDBConnection().prepareStatement(sql);
             preparedStatement.setString(1, asset_name);
             preparedStatement.executeUpdate();

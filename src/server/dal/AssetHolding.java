@@ -50,7 +50,7 @@ public class AssetHolding extends Connect {
         Boolean value = true;
         openDB();
         try {
-            String sql = "insert into asset_holding values (?, ?, ?);";
+            String sql = "insert into asset_holding (org_unit_id, asset_id, quantity) values (?, ?, ?);";
             PreparedStatement preparedStatement = this.getDBConnection().prepareStatement(sql);
             preparedStatement.setInt(1, org_unit_id);
             preparedStatement.setInt(2, asset_id);
