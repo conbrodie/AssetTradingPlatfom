@@ -3,19 +3,19 @@ package server.dal;
 import java.util.List;
 
 public class AssetDbMock implements AssetDb {
-    private List<String> getAssetReturns;
-    private List<Boolean> createAssetReturn;
-    public AssetDbMock(List<String> getAssetReturns, List<Boolean> createAssetReturn) {
-        this.getAssetReturns = getAssetReturns;
+    private String getAssetReturn;
+    private boolean createAssetReturn;
+    public AssetDbMock(String getAssetReturn, boolean createAssetReturn) {
+        this.getAssetReturn = getAssetReturn;
         this.createAssetReturn = createAssetReturn;
     }
     @Override
     public String getAssets() {
-        return getAssetReturns.remove(0);
+        return getAssetReturn;
     }
 
     @Override
     public boolean createAsset(int asset_id, String asset_name) {
-        return createAssetReturn.remove(0);
+        return createAssetReturn;
     }
 }
