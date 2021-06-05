@@ -65,7 +65,7 @@ public class ServerThread extends Thread {
                 if (! clientRequest.equals("bye")) { // manages the client logging off or closing the client (by-pass all code)
                     JSONAction objAction = objectMapper.readValue(clientRequest, JSONAction.class);
                     //LOGGER.log(Level.INFO, "Action '" + objAction.getCommand() + "' has been requested."); // TODO: debug code
-                    String jsonResult = logic.ProcessCommand(objAction, objAction.getUsername(), clientName);
+                    String jsonResult = logic.ProcessCommand(objAction, objAction.getUsername());
                     //LOGGER.log(Level.INFO, "Action '" + objAction.getCommand() +
                     // "' processed for user '" + objAction.getUsername() + "'."); // TODO: debug code
                     DataTransfer.sendMessage(clientSocket, jsonResult); // send Action's outcome to client

@@ -1,11 +1,15 @@
 package server;
 
+import client.gui.forms.Login;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.jdbc.log.Log;
 import common.Utilities;
 import common.models.*;
 import common.transport.*;
 import server.dal.*;
+
+import java.util.logging.Level;
 
 public class ServerLogicCommands {
     private final static ObjectMapper objectMapper = new ObjectMapper();
@@ -321,6 +325,142 @@ public class ServerLogicCommands {
             objResult.setErrorMessage("Password was not valid, Are you logged in!");
         }
         return objectMapper.writeValueAsString(objResult);
+    }
+
+    public static String manageUser(boolean isLoggedIn, JSONAction obj, UserDb db) throws JsonProcessingException {
+        JSONAcknowledgement objAcknowledgement = new JSONAcknowledgement();
+
+        if (isLoggedIn) {
+            boolean success = false;
+            parseFromLinkedHashMapToObject(obj); // see comment above.
+            UserModel um = (UserModel) obj.getObject();
+            if (obj.getSqlStatementType().equals("create")) {
+                // Check if username already in User table - must be unique
+                if (db.getUserId(obj.getUsername()) <= 0) {
+                    success = db.createUser(um.getUsername(), um.getPassword(), um.getOrg_unit_id(), um.getAccount_type_id());
+                    if (success) {
+                        objAcknowledgement.setMessage("User '" + um.getUsername() + "' was created.");
+                    } else {
+                        objAcknowledgement.setErrorMessage("User '" + um.getUsername() + "' was not created.");
+                    }
+                }
+                else {
+                    success = false;
+                    objAcknowledgement.setErrorMessage("Username '" + um.getUsername() + "' is not available.");
+                }
+            }
+            else if (obj.getSqlStatementType().equals("update")) {
+                success = db.updateUser(um.getUser_id(), um.getUsername(), um.getPassword(), um.getOrg_unit_id(), um.getAccount_type_id());
+
+                if (success) {
+                    objAcknowledgement.setMessage("User '" + um.getUsername() + "' was updated.");
+                }
+                else {
+                    objAcknowledgement.setErrorMessage("User '" + um.getUsername() + "' was not updated");
+                }
+            }
+            objAcknowledgement.setSuccess(success ? "1" : "0");
+        }
+        else { // invalid password
+            objAcknowledgement.setSuccess("0");
+            objAcknowledgement.setErrorMessage("Password was not valid, Are you logged in!");
+        }
+        return objectMapper.writeValueAsString(objAcknowledgement);
+    }
+
+    public static String changePassword(boolean isLoggedIn, JSONAction obj, UserDb db) throws JsonProcessingException {
+        JSONAcknowledgement objAcknowledgement = new JSONAcknowledgement();
+
+        if (isLoggedIn) {
+            boolean success = false;
+            parseFromLinkedHashMapToObject(obj);
+            JSONChangePassword jcp = (JSONChangePassword) obj.getObject();
+            if (obj.getSqlStatementType().equals("update")) {
+                success = db.changePassword(jcp.getUsername(), jcp.getNewPassword(), jcp.getOldPassword());
+                if (success) {
+                    objAcknowledgement.setMessage("Password change for '" + jcp.getUsername() + "' was successful.");
+                }
+                else {
+                    objAcknowledgement.setErrorMessage("Password change for '" + jcp.getUsername() + "' was unsuccessful.");
+                }
+            }
+            objAcknowledgement.setSuccess(success ? "1" : "0");
+        }
+        else { // invalid password
+            objAcknowledgement.setSuccess("0");
+            objAcknowledgement.setErrorMessage("Password was not valid, Are you logged in!");
+        }
+        return objectMapper.writeValueAsString(objAcknowledgement);
+    }
+
+    public static String getUsers(boolean isLoggedIn, UserDb db) throws JsonProcessingException {
+        JSONResultset objResult = new JSONResultset();
+
+        if (isLoggedIn) {
+            String jsonAssets = db.getUsers();
+            if (! Utilities.isNullOrEmpty(jsonAssets)) {
+                objResult.setSuccess("1");
+                objResult.setResultSetType("json");
+                objResult.setResultSet(jsonAssets);
+                objResult.setMessage("Users have been retrieved.");
+            } else {
+                objResult.setSuccess("0");
+                objResult.setErrorMessage("Error when trying to retrieve users.");
+            }
+        }
+        else { // invalid password
+            objResult.setSuccess("0");
+            objResult.setErrorMessage("Password was not valid, Are you logged in!");
+        }
+        return objectMapper.writeValueAsString(objResult);
+    }
+
+    public static class LoginResult {
+        public final String username;
+        public final boolean validPassword;
+        public final String message;
+        public LoginResult(String username, boolean validPassword, String message) {
+            this.username = username;
+            this.validPassword = validPassword;
+            this.message = message;
+        }
+    }
+
+    public static LoginResult login(String clientName, JSONAction obj, UserDb db) throws JsonProcessingException {
+        JSONLoginResult ogjLoginResult = new JSONLoginResult();
+        boolean validPassword = false;
+
+        // Need to convert to JSONLogin object due to Jackson serialisation as it
+        // did not know enough about what the object was during the process.
+        parseFromLinkedHashMapToObject(obj); // see comment above.
+        JSONLogin login = (JSONLogin) obj.getObject();
+        String userPassword = login.getPassword(); // hashed password from user to be tested
+        // Get credentials from database.
+        String retrievedPassword = db.getUserSecurityCredentials(login.getUsername());
+
+        if (retrievedPassword != null) { // this will occur if user does not exist in db
+            if (userPassword.equals(retrievedPassword)) { // password is ok
+                validPassword = true;
+                String userDetails = db.getUserDetails(login.getUsername());
+                ogjLoginResult.setSuccess("1");
+                ogjLoginResult.setPassword(retrievedPassword);
+                ogjLoginResult.setJsonUserDetails(userDetails);
+                ogjLoginResult.setClientName(clientName);
+                ogjLoginResult.setMessage("User '" + login.getUsername() + "' is logged in!");
+            }
+            else { // invalid
+                ogjLoginResult.setSuccess("0");
+                ogjLoginResult.setPassword("");
+                ogjLoginResult.setClientName(clientName);
+                ogjLoginResult.setErrorMessage("Please check username and password values!");
+            }
+        }
+        else { // username not in database
+            ogjLoginResult.setSuccess("0");
+            ogjLoginResult.setErrorMessage("Username unknown!");
+        }
+        String message = objectMapper.writeValueAsString(new JSONLoginResult(ogjLoginResult));
+        return new LoginResult(login.getUsername(), validPassword, message);
     }
 
     /**
