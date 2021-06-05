@@ -491,30 +491,9 @@ public class ServerLogic {
             }
 
             case Get_Latest_Trade_Message: {
-                JSONTradeMessageAcknowledgement objResult = new JSONTradeMessageAcknowledgement ();
-                final String tradeType = "BUY"; // locked in at 'BUY'
-
-                if (validPassword) {
-                    TradeHistory th = new TradeHistory();
-                    String latestTradeMessage = th.getLatestTradeMessage(tradeType, obj.getOrgUnitName());
-                    if (!Utilities.isNullOrEmpty(latestTradeMessage)) {
-                        objResult.setSuccess("1");
-                        objResult.setLatestTradeMessage(latestTradeMessage);
-                        objResult.setMessage("Latest trade message has been retrieved.");
-                    } else {
-                        objResult.setSuccess("0");
-                        objResult.setErrorMessage("Error when trying to retrieve trade message.");
-                    }
-                }
-                else { // invalid password
-                    objResult.setSuccess("0");
-                    objResult.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objResult);
-
+                jsonReturn = ServerLogicCommands.getLatestTradeMessage(validPassword, obj);
                 break;
             }
-
             default: {
                 LOGGER.log(Level.INFO, "Server:Logic - Command: " + CmdType.name() + " unknown.");
                 break;

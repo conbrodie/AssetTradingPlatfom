@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The idea is to have a main controlling form/JPanel. This form acts as that form it is the  Controller, meaning
+ * The idea is to have a main controlling form/JPanel. This form acts as that form it is the Controller, meaning
  * that all final actions are performed in it.
  */
 
