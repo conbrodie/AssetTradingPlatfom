@@ -395,26 +395,7 @@ public class ServerLogic {
             }
 
             case Get_Org_Units: {
-                JSONResultset objResult = new JSONResultset();
-
-                if (validPassword) {
-                    OrgUnit ou = new OrgUnit();
-                    String jsonOrgUnits = ou.getOrgUnits();
-                    if (!Utilities.isNullOrEmpty(jsonOrgUnits)) {
-                        objResult.setSuccess("1");
-                        objResult.setResultSetType("json");
-                        objResult.setResultSet(jsonOrgUnits);
-                        objResult.setMessage("Organisational units has been retrieved.");
-                    } else {
-                        objResult.setSuccess("0");
-                        objResult.setErrorMessage("Error when trying to retrieve organisational units.");
-                    }
-                }
-                else { // invalid password
-                    objResult.setSuccess("0");
-                    objResult.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objResult);
+                jsonReturn = ServerLogicCommands.getOrgUnits(validPassword, obj);
                 break;
             }
 

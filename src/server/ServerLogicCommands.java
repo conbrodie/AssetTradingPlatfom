@@ -8,6 +8,7 @@ import common.transport.*;
 import server.dal.AccountTypeDb;
 import server.dal.Asset;
 import server.dal.AssetDb;
+import server.dal.OrgUnit;
 
 public class ServerLogicCommands {
     private final static ObjectMapper objectMapper = new ObjectMapper();
@@ -73,6 +74,51 @@ public class ServerLogicCommands {
             } else {
                 objResult.setSuccess("0");
                 objResult.setErrorMessage("Error when trying to retrieve assets.");
+            }
+        }
+        else { // invalid password
+            objResult.setSuccess("0");
+            objResult.setErrorMessage("Password was not valid, Are you logged in!");
+        }
+        return objectMapper.writeValueAsString(objResult);
+    }
+
+    public static String getLatestTradeMessage(boolean isLoggedIn, AssetDb db) throws JsonProcessingException {
+        JSONResultset objResult = new JSONResultset();
+
+        if (isLoggedIn) {
+            String jsonAssets = db.getAssets();
+            if (! Utilities.isNullOrEmpty(jsonAssets)) {
+                objResult.setSuccess("1");
+                objResult.setResultSetType("json");
+                objResult.setResultSet(jsonAssets);
+                objResult.setMessage("Assets has been retrieved.");
+            } else {
+                objResult.setSuccess("0");
+                objResult.setErrorMessage("Error when trying to retrieve assets.");
+            }
+        }
+        else { // invalid password
+            objResult.setSuccess("0");
+            objResult.setErrorMessage("Password was not valid, Are you logged in!");
+        }
+        return objectMapper.writeValueAsString(objResult);
+    }
+
+    public static String getOrgUnits(boolean isLoggedIn, AssetDb db) throws JsonProcessingException {
+        JSONResultset objResult = new JSONResultset();
+
+        if (isLoggedIn) {
+            OrgUnit ou = new OrgUnit();
+            String jsonOrgUnits = ou.getOrgUnits();
+            if (!Utilities.isNullOrEmpty(jsonOrgUnits)) {
+                objResult.setSuccess("1");
+                objResult.setResultSetType("json");
+                objResult.setResultSet(jsonOrgUnits);
+                objResult.setMessage("Organisational units has been retrieved.");
+            } else {
+                objResult.setSuccess("0");
+                objResult.setErrorMessage("Error when trying to retrieve organisational units.");
             }
         }
         else { // invalid password
