@@ -461,26 +461,7 @@ public class ServerLogic {
             }
 
             case Get_Accounts: {
-                JSONResultset objResult = new JSONResultset();
-
-                if (validPassword) {
-                    AccountType at = new AccountType();
-                    String jsonAccountTypes = at.getAccounts();
-                    if (!Utilities.isNullOrEmpty(jsonAccountTypes)) {
-                        objResult.setSuccess("1");
-                        objResult.setResultSetType("json");
-                        objResult.setResultSet(jsonAccountTypes);
-                        objResult.setMessage("Account types have been retrieved.");
-                    } else {
-                        objResult.setSuccess("0");
-                        objResult.setErrorMessage("Error when trying to retrieve account types.");
-                    }
-                }
-                else { // invalid password
-                    objResult.setSuccess("0");
-                    objResult.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objResult);
+                jsonReturn = ServerLogicCommands.getAccounts(validPassword, new AccountType());
                 break;
             }
 
