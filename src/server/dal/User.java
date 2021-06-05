@@ -156,7 +156,7 @@ public class User extends Connect {
         Boolean value = true;
         openDB();
         try {
-            String sql = "insert into user values (default, ?, ?, ?, ?)"; // default - use auto-increment id
+            String sql = "insert into user (user_id, username, password, org_unit_id, account_type_id) values (default, ?, ?, ?, ?)"; // default - use auto-increment id
             PreparedStatement preparedStatement = this.getDBConnection().prepareStatement(sql);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
