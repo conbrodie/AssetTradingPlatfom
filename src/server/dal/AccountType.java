@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AccountType extends Connect {
+public class AccountType extends Connect implements AccountTypeDb {
     // This class holds the methods associated with the 'account_type' table, it forms a part of the Data Access Layer.
 
      /* account_type table attributes

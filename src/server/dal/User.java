@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class User extends Connect {
+public class User extends Connect implements UserDb {
     // This class holds the methods associated with the 'user' table, it forms a part of the Data Access Layer.
 
     /* User table attributes
@@ -205,7 +205,7 @@ public class User extends Connect {
      * @param username - A unique username, new password hashed format, old password hashed format
      * @return boolean - success or failure
      */
-    public boolean changePassword(String username, String newPassword, String oldPassword) throws SQLException {
+    public boolean changePassword(String username, String newPassword, String oldPassword) {
         Boolean value = true;
         openDB();
         try {

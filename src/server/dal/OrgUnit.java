@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class OrgUnit extends Connect {
+public class OrgUnit extends Connect implements OrgUnitDb {
     // This class holds the methods associated with the 'org_unit' table, it forms a part of the Data Access Layer.
 
      /* org_unit table attributes

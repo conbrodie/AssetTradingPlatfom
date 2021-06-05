@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class TradeHistory extends Connect {
+public class TradeHistory extends Connect implements TradeHistoryDb {
     // This class holds the methods associated with the 'trade_history' table, it forms a part of the Data Access Layer.
 
      /* trade_history table attributes

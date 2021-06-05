@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AssetHolding extends Connect {
+public class AssetHolding extends Connect implements AssetHoldingDb {
     // This class holds the methods associated with the 'asset_holding' table, it forms a part of the Data Access Layer.
 
      /* asset_holding table attributes

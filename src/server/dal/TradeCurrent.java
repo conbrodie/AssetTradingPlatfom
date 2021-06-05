@@ -4,7 +4,7 @@ import server.Utilities;
 
 import java.sql.*;
 
-public class TradeCurrent extends Connect {
+public class TradeCurrent extends Connect implements TradeCurrentDb {
     // This class holds the methods associated with the 'trade_current' table, it forms a part of the Data Access Layer.
 
      /* trade table attributes

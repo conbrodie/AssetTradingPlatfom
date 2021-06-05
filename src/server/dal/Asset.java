@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Asset extends Connect {
+public class Asset extends Connect implements AssetDb {
     // This class holds the methods associated with the 'asset' table, it forms a part of the Data Access Layer.
 
      /* asset table attributes
