@@ -139,78 +139,12 @@ public class ServerLogic {
             }
 
             case Manage_Org_Unit: {
-                JSONAcknowledgement objAcknowledgement = new JSONAcknowledgement();
-
-                if (validPassword) {
-                    boolean success = false;
-                    OrgUnit ou = new OrgUnit();
-                    parseFromLinkedHashMapToObject(obj);
-                    OrgUnitModel oum = (OrgUnitModel) obj.getObject();
-                    if (obj.getSqlStatementType().equals("create")) {
-                        success = ou.createOrgUnit(oum.getOrg_unit_name(), oum.getCredits());
-                        if (success) {
-                            objAcknowledgement.setMessage("Organisation '" + oum.getOrg_unit_name() + "' was created.");
-                        }
-                        else {
-                            objAcknowledgement.setErrorMessage("Organisation '" + oum.getOrg_unit_name() + "' was not created.");
-                        }
-                    }
-                    else if (obj.getSqlStatementType().equals("update")) {
-                        success = ou.updateOrgUnit(oum.getOrg_unit_id(), oum.getOrg_unit_name(), oum.getCredits());
-
-                        if (success) {
-                            objAcknowledgement.setMessage("Organisation '" + oum.getOrg_unit_name() + "' was updated.");
-                        }
-                        else {
-                            objAcknowledgement.setErrorMessage("Organisation '" + oum.getOrg_unit_name() + "' was not updated");
-                        }
-                    }
-                    objAcknowledgement.setSuccess(success ? "1" : "0");
-                }
-                else { // invalid password
-                    objAcknowledgement.setSuccess("0");
-                    objAcknowledgement.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objAcknowledgement);
-
+                jsonReturn = ServerLogicCommands.manageOrgUnit(validPassword, obj, new OrgUnit());
                 break;
             }
 
             case Manage_Asset_Holding: {
-                JSONAcknowledgement objAcknowledgement = new JSONAcknowledgement();
-
-                if (validPassword) {
-                    boolean success = false;
-                    AssetHolding ah = new AssetHolding();
-                    parseFromLinkedHashMapToObject(obj);
-                    AssetHoldingModel ahm = (AssetHoldingModel) obj.getObject();
-                    if (obj.getSqlStatementType().equals("create")) {
-                        success = ah.createAssetHolding(ahm.getOrg_unit_id(), ahm.getAsset_id(), ahm.getQuantity());
-                        if (success) {
-                            objAcknowledgement.setMessage("Asset Holding was created.");
-                        }
-                        else {
-                            objAcknowledgement.setErrorMessage("Asset Holding was NOT created.");
-                        }
-                    }
-                    else if (obj.getSqlStatementType().equals("update")) {
-                        success = ah.updateAssetHolding(ahm.getOrg_unit_id(), ahm.getAsset_id(), ahm.getQuantity());
-
-                        if (success) {
-                            objAcknowledgement.setMessage("Asset Holding was updated.");
-                        }
-                        else {
-                            objAcknowledgement.setErrorMessage("Asset Holding was NOT updated");
-                        }
-                    }
-                    objAcknowledgement.setSuccess(success ? "1" : "0");
-                }
-                else { // invalid password
-                    objAcknowledgement.setSuccess("0");
-                    objAcknowledgement.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objAcknowledgement);
-
+                jsonReturn = ServerLogicCommands.manageAssetHolding(validPassword, obj, new AssetHolding());
                 break;
             }
 
@@ -248,96 +182,17 @@ public class ServerLogic {
             }
 
             case Add_Trade: {
-                JSONAddTradeAcknowledgement objAddTradeAcknowledgement = new JSONAddTradeAcknowledgement();
-
-                if (validPassword) {
-                    boolean success = false;
-                    String[] result;
-                    TradeCurrent tc = new TradeCurrent();
-                    parseFromLinkedHashMapToObject(obj);
-                    TradeCurrentModel tcm = (TradeCurrentModel) obj.getObject();
-                    if (obj.getSqlStatementType().equals("create")) {
-                        result = tc.createTrade(tcm.getTrade_type(), tcm.getOrg_unit_id(),
-                                tcm.getOrg_unit_name(), tcm.getUser_id(), tcm.getUsername(),
-                                tcm.getAsset_id(), tcm.getAsset_name(), tcm.getQuantity(),
-                                tcm.getPrice(), tcm.getTrade_date());
-                        if (result[0].equals("3")) {
-                            success = true;
-                            objAddTradeAcknowledgement.setTradeId(Integer.parseInt(result[2]));
-                            objAddTradeAcknowledgement.setMessage("Trade was created.");
-                        }
-                        else {
-                            objAddTradeAcknowledgement.setErrorMessage(result[1]);
-                        }
-                    }
-                    objAddTradeAcknowledgement.setSuccess(success ? "1" : "0");
-                }
-                else { // invalid password
-                    objAddTradeAcknowledgement.setSuccess("0");
-                    objAddTradeAcknowledgement.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objAddTradeAcknowledgement);
-
+                jsonReturn = ServerLogicCommands.addTrade(validPassword, obj, new TradeCurrent());
                 break;
             }
 
             case Delete_Trade: {
-                JSONAcknowledgement objAcknowledgement = new JSONAcknowledgement();
-
-                if (validPassword) {
-                    boolean success = false;
-                    TradeCurrent tc = new TradeCurrent();
-                    if (obj.getSqlStatementType().equals("delete")) {
-                        success = tc.deleteTrade(obj.getId());
-                        if (success) {
-                            objAcknowledgement.setMessage("Trade was deleted.");
-                        }
-                        else {
-                            objAcknowledgement.setErrorMessage("Trade was not deleted.");
-                        }
-                    }
-                    objAcknowledgement.setSuccess(success ? "1" : "0");
-                }
-                else { // invalid password
-                    objAcknowledgement.setSuccess("0");
-                    objAcknowledgement.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objAcknowledgement);
-
+                jsonReturn = ServerLogicCommands.deleteTrade(validPassword, obj, new TradeCurrent());
                 break;
             }
 
             case Get_Graph_History: {
-                JSONResultset objResult = new JSONResultset();
-
-                if (validPassword) {
-                    TradeHistory th = new TradeHistory();
-                    Integer noOfTrades = th.getCountOfTradesForAsset(obj.getAssetName());
-                    if (noOfTrades > 0) {
-                        String jsonTradeHistory = th.getTradeHistory();
-                        if (! Utilities.isNullOrEmpty(jsonTradeHistory)) {
-                            objResult.setSuccess("1");
-                            objResult.setResultSetType("json");
-                            objResult.setResultSet(jsonTradeHistory);
-                            objResult.setMessage("Trade history for asset '" + obj.getAssetName() +
-                                                        "' has been retrieved." );
-                        } else {
-                            objResult.setSuccess("0");
-                            objResult.setErrorMessage("Error when trying to retrieve trade history for '" +
-                                                        obj.getAssetName() + "'.");
-                        }
-                    }
-                    else {
-                        objResult.setSuccess("0");
-                        objResult.setErrorMessage("Error occurred in retrieving trade history, check its name!");
-                    }
-                }
-                else { // invalid password
-                    objResult.setSuccess("0");
-                    objResult.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objResult);
-
+                jsonReturn = ServerLogicCommands.getGraphHistory(validPassword, obj, new TradeHistory());
                 break;
             }
 
@@ -371,31 +226,12 @@ public class ServerLogic {
             }
 
             case Get_Asset_Holdings: {
-                JSONResultset objResult = new JSONResultset();
-
-                if (validPassword) {
-                    AssetHolding ah = new AssetHolding();
-                    String jsonAssetHoldings = ah.getAssetHoldings();
-                    if (!Utilities.isNullOrEmpty(jsonAssetHoldings)) {
-                        objResult.setSuccess("1");
-                        objResult.setResultSetType("json");
-                        objResult.setResultSet(jsonAssetHoldings);
-                        objResult.setMessage("Asset holdings has been retrieved.");
-                    } else {
-                        objResult.setSuccess("0");
-                        objResult.setErrorMessage("Error when trying to retrieve asset holdings.");
-                    }
-                }
-                else { // invalid password
-                    objResult.setSuccess("0");
-                    objResult.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objResult);
+                jsonReturn = ServerLogicCommands.getAssetHoldings(validPassword, new AssetHolding());
                 break;
             }
 
             case Get_Org_Units: {
-                jsonReturn = ServerLogicCommands.getOrgUnits(validPassword, obj);
+                jsonReturn = ServerLogicCommands.getOrgUnits(validPassword, new OrgUnit());
                 break;
             }
 
@@ -405,32 +241,12 @@ public class ServerLogic {
             }
 
             case Get_Current_Trades: {
-                JSONResultset objResult = new JSONResultset();
-
-                if (validPassword) {
-                    TradeCurrent trade = new TradeCurrent();
-                    String jsonCurrentTrades = trade.getTrades();
-                    if (!Utilities.isNullOrEmpty(jsonCurrentTrades)) {
-                        objResult.setSuccess("1");
-                        objResult.setResultSetType("json");
-                        objResult.setResultSet(jsonCurrentTrades);
-                        objResult.setMessage("Current trades have been retrieved.");
-                    } else {
-                        objResult.setSuccess("0");
-                        objResult.setErrorMessage("Error when trying to retrieve current trades.");
-                    }
-                }
-                else { // invalid password
-                    objResult.setSuccess("0");
-                    objResult.setErrorMessage("Password was not valid, Are you logged in!");
-                }
-                jsonReturn = objectMapper.writeValueAsString(objResult);
-
+                jsonReturn = ServerLogicCommands.getCurrentTrades(validPassword, new TradeCurrent());
                 break;
             }
 
             case Get_Latest_Trade_Message: {
-                jsonReturn = ServerLogicCommands.getLatestTradeMessage(validPassword, obj);
+                jsonReturn = ServerLogicCommands.getLatestTradeMessage(validPassword, obj, new TradeHistory());
                 break;
             }
             default: {
