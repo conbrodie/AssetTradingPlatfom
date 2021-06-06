@@ -53,10 +53,6 @@ public class Login extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        // TODO: remove before release
-        txtUsername.setText("stock.c");
-        pwdPassword.setText("pwd");
-
         pwdPassword.addActionListener((e) -> btnLogin.doClick());
 
         btnLogin.addActionListener((e) -> {
