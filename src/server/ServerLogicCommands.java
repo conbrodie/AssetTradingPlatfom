@@ -224,6 +224,7 @@ public class ServerLogicCommands {
                 }
                 else {
                     objAddTradeAcknowledgement.setErrorMessage(result[1]);
+                    objAddTradeAcknowledgement.setMessage("Trade was NOT created.");
                 }
             }
             objAddTradeAcknowledgement.setSuccess(success ? "1" : "0");
