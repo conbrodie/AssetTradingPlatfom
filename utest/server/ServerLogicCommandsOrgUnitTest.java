@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ServerLogicCommandsOrgUnitTest {
     private OrgUnitDbMock db;
-// JSONAction obj = new JSONAction();
     /**
      * Tests for getting Organisation Units
      */
