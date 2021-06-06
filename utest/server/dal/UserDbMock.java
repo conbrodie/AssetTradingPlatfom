@@ -1,16 +1,15 @@
 package server.dal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class UserDbMock implements UserDb {
 
     private Boolean createUserReturn;
     private String getUsersReturn;
+    private int getUserIdReturn;
 
-    public UserDbMock(Boolean createUserReturn, String getUsersReturn) {
+    public UserDbMock(Boolean createUserReturn, String getUsersReturn, int getUserIdReturn) {
         this.createUserReturn = createUserReturn;
         this.getUsersReturn = getUsersReturn;
+        this.getUserIdReturn = getUserIdReturn;
     }
 
     @Override
@@ -20,7 +19,7 @@ public class UserDbMock implements UserDb {
 
     @Override
     public int getUserId(String username) {
-        return 0;
+        return getUserIdReturn;
     }
 
     @Override
