@@ -33,7 +33,7 @@
         <!-- Compile unit test source -->
         <javac srcdir="utest" classpath="${base}:${jackson-annotations}:${jackson-core}:${jackson-databind}:${jfreechart}:${mysql-connector-java}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}"
                destdir="${testBase}" includeantruntime="false">
-            <include name="client/*.java" />
+            <include name="**/*.java" />
         </javac>
     </target>
 
