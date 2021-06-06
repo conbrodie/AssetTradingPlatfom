@@ -37,6 +37,14 @@ public class JSONAction {
         this.username = username;
     }
 
+    public JSONAction(String command, String sqlStatementType, Object object,
+                      String objectType) {
+        this.command = command;
+        this.sqlStatementType = sqlStatementType;
+        this.object = object;
+        this.objectType = objectType;
+    }
+
     public String getCommand() {
         return command;
     }
