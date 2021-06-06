@@ -37,18 +37,18 @@ public class TradeTableModelTest {
         assertEquals(0, ttm.getRowCount());
     }
 
-    @Test
-    public void testRefreshTrades() {
-        TradeTableModel ttm = new TradeTableModel(new ArrayList<>());
-        Timestamp time = new Timestamp(1622873054735l);
-        ArrayList<TradeCurrentModel> currentTrades = new  ArrayList<TradeCurrentModel>();
-        // add trades for refresh
-        currentTrades.add(new TradeCurrentModel(1, "BUY", 1, "org", 10, "user", 3, "asset", 5, 20, time));
-        currentTrades.add(new TradeCurrentModel(2, "SELL", 1, "org", 10, "user", 3, "asset", 5, 20, time));
-        // add initial trade
-        ttm.addTrade(new TradeCurrentModel(1, "BUY", 1, "org", 10, "user", 3, "asset", 5, 20, time));
-        assertEquals(1, ttm.getRowCount());
-        ttm.refreshTrades(currentTrades);
-        assertEquals(2, ttm.getRowCount());
-    }
+//    @Test
+//    public void testRefreshTrades() {
+//        TradeTableModel ttm = new TradeTableModel(new ArrayList<>());
+//        Timestamp time = new Timestamp(1622873054735l);
+//        ArrayList<TradeCurrentModel> currentTrades = new  ArrayList<TradeCurrentModel>();
+//        // add trades for refresh
+//        currentTrades.add(new TradeCurrentModel(1, "BUY", 1, "org", 10, "user", 3, "asset", 5, 20, time));
+//        currentTrades.add(new TradeCurrentModel(2, "SELL", 1, "org", 10, "user", 3, "asset", 5, 20, time));
+//        // add initial trade
+//        ttm.addTrade(new TradeCurrentModel(1, "BUY", 1, "org", 10, "user", 3, "asset", 5, 20, time));
+//        assertEquals(1, ttm.getRowCount());
+//        ttm.refreshTrades(currentTrades);
+//        assertEquals(2, ttm.getRowCount());
+//    }
 }
