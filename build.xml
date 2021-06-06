@@ -45,7 +45,7 @@
             </classpath>
             <testclasses outputDir="${testBase}">
                 <fileset dir="${testBase}"/>
-                <listener type="legacy-xml"/>
+                <listener type="legacy-xml" sendSysOut="true" sendSysErr="true" />
             </testclasses>
         </junitlauncher>
         <fail if="junit.failure" message="junit tests failed - aborting"/>
