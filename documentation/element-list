@@ -1,0 +1,10 @@
+client
+client.gui
+client.gui.forms
+common
+common.message
+common.models
+common.security
+common.transport
+server
+server.dal
