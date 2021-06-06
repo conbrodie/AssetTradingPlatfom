@@ -1,5 +1,6 @@
 package server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import common.models.TradeCurrentModel;
 import common.transport.JSONAction;
 import org.junit.jupiter.api.Test;
@@ -16,28 +17,28 @@ public class ServerLogicCommandsTradeCurrentTest {
      * Tests for getting current trades
      */
     @Test
-    public void testGetTradesWhenNotLoggedIn() throws Exception {
+    public void testGetTradesWhenNotLoggedIn() throws JsonProcessingException {
         db = new TradeCurrentDbMock(null, null, null, null);
         String expected = "{\"errorMessage\":\"Password was not valid, Are you logged in!\",\"message\":null,\"resultSet\":null,\"resultSetType\":null,\"success\":\"0\"}";
         assertEquals(expected, ServerLogicCommands.getCurrentTrades(false, db));
     }
 
     @Test
-    public void testGetTradesWithLoggedInAndNull() throws Exception {
+    public void testGetTradesWithLoggedInAndNull() throws JsonProcessingException {
         db = new TradeCurrentDbMock(null, null, null, null);
         String expected = "{\"errorMessage\":\"Error when trying to retrieve current trades.\",\"message\":null,\"resultSet\":null,\"resultSetType\":null,\"success\":\"0\"}";
         assertEquals(expected, ServerLogicCommands.getCurrentTrades(true, db));
     }
 
     @Test
-    public void testGetTradesWithLoggedInAnEmpty() throws Exception {
+    public void testGetTradesWithLoggedInAnEmpty() throws JsonProcessingException {
         db = new TradeCurrentDbMock("", null, null, null);
         String expected = "{\"errorMessage\":\"Error when trying to retrieve current trades.\",\"message\":null,\"resultSet\":null,\"resultSetType\":null,\"success\":\"0\"}";
         assertEquals(expected, ServerLogicCommands.getCurrentTrades(true, db));
     }
 
     @Test
-    public void testGetTradesWithLoggedInAndAvailableTrades() throws Exception {
+    public void testGetTradesWithLoggedInAndAvailableTrades() throws JsonProcessingException {
         db = new TradeCurrentDbMock("[]", null, null, null);
         String expected = "{\"errorMessage\":null,\"message\":\"Current trades have been retrieved.\",\"resultSet\":\"[]\",\"resultSetType\":\"json\",\"success\":\"1\"}";
         assertEquals(expected, ServerLogicCommands.getCurrentTrades(true, db));
@@ -47,7 +48,7 @@ public class ServerLogicCommandsTradeCurrentTest {
      * Tests for creating current trades
      */
     @Test
-    public void testCreateTradesWhenNotLoggedIn() throws Exception {
+    public void testCreateTradesWhenNotLoggedIn() throws JsonProcessingException {
         db = new TradeCurrentDbMock(null, null, null, null);
         JSONAction obj = new JSONAction();
         String expected = "{\"errorMessage\":\"Password was not valid, Are you logged in!\",\"message\":null,\"success\":\"0\",\"tradeId\":0}";
@@ -55,7 +56,7 @@ public class ServerLogicCommandsTradeCurrentTest {
     }
 
     @Test
-    public void testCreateTradesWithLoggedInAndInvalid() throws Exception {
+    public void testCreateTradesWithLoggedInAndInvalid() throws JsonProcessingException {
         String[] result = new String[3];
         result[0] = "0";
         result[1] = "1";
@@ -67,7 +68,7 @@ public class ServerLogicCommandsTradeCurrentTest {
     }
 
     @Test
-    public void testCreateTradesWithLoggedInAndVaild() throws Exception {
+    public void testCreateTradesWithLoggedInAndVaild() throws JsonProcessingException {
         String[] result = new String[3];
         result[0] = "3";
         result[1] = "1";
@@ -82,7 +83,7 @@ public class ServerLogicCommandsTradeCurrentTest {
      * Tests for deleting current trades
      */
     @Test
-    public void testDeleteTradesWhenNotLoggedIn() throws Exception {
+    public void testDeleteTradesWhenNotLoggedIn() throws JsonProcessingException {
         db = new TradeCurrentDbMock(null, null, null, null);
         JSONAction obj = new JSONAction();
         String expected = "{\"errorMessage\":\"Password was not valid, Are you logged in!\",\"message\":null,\"success\":\"0\"}";
@@ -90,7 +91,7 @@ public class ServerLogicCommandsTradeCurrentTest {
     }
 
     @Test
-    public void testDeleteTradesWithLoggedInAndInvalid() throws Exception {
+    public void testDeleteTradesWithLoggedInAndInvalid() throws JsonProcessingException {
         db = new TradeCurrentDbMock(null, null, false, null);
         JSONAction obj = new JSONAction("Delete_Trade", "delete", new TradeCurrentModel(1,"BUY", 1, "Compute Cluster Division", 2, "bob", 1, "CPU Hours", 1, 10, new Timestamp(1622873054735l)), "TradeCurrentModel", "Compute Cluster Division", "CPU Hours", 2, "bob");
         String expected = "{\"errorMessage\":\"Trade was not deleted.\",\"message\":null,\"success\":\"0\"}";
@@ -98,7 +99,7 @@ public class ServerLogicCommandsTradeCurrentTest {
     }
 
     @Test
-    public void testDeleteTradesWithLoggedInAndVaild() throws Exception {
+    public void testDeleteTradesWithLoggedInAndVaild() throws JsonProcessingException {
         db = new TradeCurrentDbMock(null, null, true, null);
         JSONAction obj = new JSONAction("Delete_Trade", "delete", new TradeCurrentModel(1,"BUY", 1, "Compute Cluster Division", 2, "bob", 1, "CPU Hours", 1, 10, new Timestamp(1622873054735l)), "TradeCurrentModel", "Compute Cluster Division", "CPU Hours", 2, "bob");
         String expected = "{\"errorMessage\":null,\"message\":\"Trade was deleted.\",\"success\":\"1\"}";
