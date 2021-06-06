@@ -51,5 +51,4 @@ public class ServerLogicCommandsUserTest {
         String expected = "{\"errorMessage\":\"Username unknown!\",\"message\":null,\"success\":\"0\"}";
         assertEquals(expected, ServerLogicCommands.login("wrong.user", obj, db));
     }
-
 }
