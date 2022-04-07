@@ -11,7 +11,6 @@ Locate DB_Setup.sql in the scripts folder and create the database. You will need
 Modify the localhost as required in network.prop
 
 Modify the items as identified in db.prop
-
 ```
 
 
